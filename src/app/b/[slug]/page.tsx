@@ -48,80 +48,81 @@ export default async function BusinessPage({ params, searchParams }: Props) {
     priceLabel: formatPrice(s.priceAgorot),
     imageId: images.byService.get(s.id) ?? null,
   }));
-  const showTiles = services.some((s) => s.imageId);
   const initialServiceId = invitation?.serviceId ?? services.find((s) => s.id === serviceParam)?.id ?? null;
   const instagram = business.instagram.replace(/^@/, "");
 
+  const initial = business.name.trim().slice(0, 1);
+
   return (
     <main className="min-h-dvh bg-stone-50">
-      {/* Hero: the owner's cover photo, or a quiet espresso band until she uploads one */}
-      <header className={`relative flex flex-col bg-stone-900 text-ivory ${images.coverId ? "min-h-[78svh] sm:min-h-[640px]" : "min-h-[56svh] sm:min-h-[480px]"}`}>
-        {images.coverId && (
+      {/* Hero: the owner's cover photo full-bleed, or an espresso field with her monogram until she uploads one */}
+      <header className="relative flex h-[92svh] max-h-[960px] min-h-[560px] flex-col overflow-hidden bg-stone-900 text-ivory">
+        {images.coverId ? (
           <>
             <Image src={imageUrl(images.coverId)} alt="" fill priority sizes="100vw" className="object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/30 to-stone-950/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/25 to-stone-950/40" />
           </>
+        ) : (
+          <div aria-hidden className="pointer-events-none absolute -bottom-24 end-[-4rem] select-none font-serif text-[28rem] font-light leading-none text-ivory/[0.04] sm:text-[40rem]">
+            {initial}
+          </div>
         )}
-        <div className="relative border-b border-ivory/20 py-4 text-center font-serif text-sm tracking-[0.35em]">{business.name}</div>
-        <div className="relative mx-auto mt-auto w-full max-w-5xl px-6 pb-14 pt-24 sm:pb-20">
+
+        <nav className="relative z-10 flex items-center justify-between gap-4 border-b border-ivory/15 px-5 py-4 sm:px-10">
+          <a href="#top" className="truncate font-serif text-lg tracking-[0.2em]">{business.name}</a>
+          <div className="flex shrink-0 items-center gap-6 text-sm tracking-wide">
+            {services.length > 0 && <a href="#services" className="hidden text-ivory/85 hover:text-ivory sm:inline">טיפולים</a>}
+            {images.gallery.length > 0 && <a href="#gallery" className="hidden text-ivory/85 hover:text-ivory sm:inline">גלריה</a>}
+            <a href="#book" className="border border-ivory/70 px-4 py-2 text-xs tracking-[0.15em] hover:bg-ivory hover:text-stone-900">לקביעת תור</a>
+          </div>
+        </nav>
+
+        <div id="top" className="relative mx-auto mt-auto w-full max-w-6xl px-6 pb-32 sm:px-10 sm:pb-28">
           {business.address && <p className="text-xs tracking-[0.3em] text-ivory/80">{business.address}</p>}
-          <h1 className="mt-3 max-w-3xl font-serif text-5xl font-light leading-[1.05] sm:text-7xl">{business.name}</h1>
-          {business.tagline && <p className="mt-4 max-w-xl text-lg font-light leading-relaxed text-ivory/90">{business.tagline}</p>}
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#book" className="btn bg-ivory px-7 py-3 text-stone-900 hover:bg-white">לקביעת תור</a>
-            {business.phone && (
-              <a href={`tel:${business.phone}`} className="btn border border-ivory/70 px-6 py-3 text-ivory hover:bg-ivory hover:text-stone-900" dir="ltr">
-                {business.phone}
-              </a>
+          <h1 className="mt-4 max-w-4xl font-serif text-[3.25rem] font-light leading-[1.02] sm:text-8xl">{business.name}</h1>
+          {business.tagline && <p className="mt-5 max-w-xl text-lg font-light leading-relaxed text-ivory/90 sm:text-xl">{business.tagline}</p>}
+          <div className="mt-9 flex flex-wrap gap-3">
+            <a href="#book" className="btn bg-ivory px-8 py-3.5 tracking-[0.12em] text-stone-900 hover:bg-white">לקביעת תור</a>
+            {services.length > 0 && (
+              <a href="#services" className="btn border border-ivory/70 px-8 py-3.5 tracking-[0.12em] text-ivory hover:bg-ivory hover:text-stone-900">לטיפולים</a>
             )}
           </div>
         </div>
       </header>
 
-      {invitation && (
-        <div className="border-b border-stone-200 bg-nude/50 px-6 py-5 text-center">
-          <p className="font-serif text-lg">{invitation.clientName ? `${invitation.clientName}, ` : ""}קיבלת הזמנה אישית</p>
-          {invitation.message && <p className="mt-1 text-sm text-stone-700">{invitation.message}</p>}
-        </div>
-      )}
-      {inviteToken && !invitation && (
-        <p className="border-b border-stone-200 bg-stone-100 px-6 py-4 text-center text-sm text-stone-600">
-          קישור ההזמנה כבר נוצל או שפג תוקפו, אבל עדיין אפשר לקבוע תור כאן.
-        </p>
-      )}
-
-      {business.about && (
-        <section className="mx-auto max-w-2xl px-6 py-20 text-center">
-          <div className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-stone-900/70 font-serif text-3xl font-light">
-            {business.name.trim().slice(0, 1)}
+      {/* Intro panel rises over the hero, with a round monogram seal on its edge */}
+      <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-stone-50 px-6 pb-4 pt-20 text-center sm:pt-24">
+        <Seal name={business.name} initial={initial} />
+        {invitation && (
+          <div className="mx-auto mb-10 max-w-xl border border-stone-300 bg-ivory px-6 py-5">
+            <p className="font-serif text-lg">{invitation.clientName ? `${invitation.clientName}, ` : ""}קיבלת הזמנה אישית</p>
+            {invitation.message && <p className="mt-1 text-sm text-stone-700">{invitation.message}</p>}
           </div>
-          <p className="mt-8 whitespace-pre-line font-serif text-xl font-light leading-relaxed sm:text-2xl">{business.about}</p>
-        </section>
-      )}
+        )}
+        {inviteToken && !invitation && (
+          <p className="mx-auto mb-10 max-w-xl bg-stone-100 px-6 py-4 text-sm text-stone-600">
+            קישור ההזמנה כבר נוצל או שפג תוקפו, אבל עדיין אפשר לקבוע תור כאן.
+          </p>
+        )}
+        {business.about && (
+          <p className="mx-auto max-w-2xl whitespace-pre-line font-serif text-2xl font-light leading-relaxed sm:text-[1.75rem]">{business.about}</p>
+        )}
+      </section>
 
-      {showTiles && (
-        <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+      {services.length > 0 && (
+        <section id="services" className="scroll-mt-6 py-20 sm:py-24">
           <SectionTitle eyebrow="הטיפולים שלנו" title="טיפולים" />
-          <div className={`mt-8 grid gap-3 ${tileColumns(services.length)}`}>
-            {services.map((s) => (
-              <a key={s.id} href={`?service=${s.id}#book`} className="group relative block aspect-[4/3] overflow-hidden bg-sand sm:aspect-[4/5]">
-                {s.imageId && (
-                  <Image src={imageUrl(s.imageId)} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition duration-700 group-hover:scale-105" />
-                )}
-                <div className={`absolute inset-0 ${s.imageId ? "bg-gradient-to-t from-stone-950/75 via-stone-950/10 to-transparent" : ""}`} />
-                <div className={`absolute inset-x-0 bottom-0 p-6 ${s.imageId ? "text-ivory" : "text-stone-900"}`}>
-                  <p className="font-serif text-2xl font-light">{s.name}</p>
-                  <p className="mt-1 text-sm opacity-85">{s.durationMin} דקות · {s.priceLabel}</p>
-                  <p className="mt-3 inline-block border-b border-current pb-0.5 text-xs tracking-[0.2em]">לקביעת תור</p>
-                </div>
-              </a>
+          {/* Phones swipe through the cards; wider screens see them as a grid */}
+          <div className={`mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:mx-auto sm:grid sm:max-w-6xl sm:overflow-visible sm:px-6 ${tileColumns(services.length)}`}>
+            {services.map((s, i) => (
+              <ServiceCard key={s.id} service={s} index={i} />
             ))}
           </div>
         </section>
       )}
 
       {images.gallery.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+        <section id="gallery" className="mx-auto max-w-6xl scroll-mt-6 px-4 pb-20 sm:px-6">
           <SectionTitle eyebrow="מהסטודיו" title="גלריה" />
           <Gallery ids={images.gallery} />
         </section>
@@ -177,10 +178,64 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   );
 }
 
-/** Picks a column count that leaves no lonely tile in the last row where possible. */
+/** Picks a column count that leaves no lonely card in the last row where possible. */
 function tileColumns(count: number) {
-  if (count === 1) return "mx-auto max-w-md";
+  if (count === 1) return "sm:max-w-md";
   if (count === 2) return "sm:grid-cols-2";
   if (count % 4 === 0) return "sm:grid-cols-2 lg:grid-cols-4";
   return "sm:grid-cols-2 lg:grid-cols-3";
+}
+
+type ServiceCardData = { id: string; name: string; description: string; durationMin: number; priceLabel: string; imageId: string | null };
+
+// Soft fills for cards whose owner hasn't added a photo yet.
+const EMPTY_FILLS = ["bg-sand", "bg-nude", "bg-stone-200"];
+
+function ServiceCard({ service: s, index }: { service: ServiceCardData; index: number }) {
+  const photo = Boolean(s.imageId);
+  return (
+    <a
+      href={`?service=${s.id}#book`}
+      className={`group relative block aspect-[3/4] w-[78%] shrink-0 snap-center overflow-hidden sm:w-auto ${photo ? "bg-stone-900" : EMPTY_FILLS[index % EMPTY_FILLS.length]}`}
+    >
+      {s.imageId ? (
+        <>
+          <Image src={imageUrl(s.imageId)} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 80vw" className="object-cover transition duration-700 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/10 to-transparent" />
+        </>
+      ) : (
+        <span aria-hidden className="absolute start-6 top-5 font-display text-7xl lining-nums text-stone-900/15">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      )}
+      <div className={`absolute inset-x-0 bottom-0 p-6 ${photo ? "text-ivory" : "text-stone-900"}`}>
+        <p className="font-serif text-[1.65rem] font-light leading-tight">{s.name}</p>
+        {s.description && <p className="mt-2 line-clamp-2 text-sm leading-relaxed opacity-85">{s.description}</p>}
+        <p className="mt-2 text-sm opacity-85">{s.durationMin} דקות · {s.priceLabel}</p>
+        <p className="mt-4 inline-block border-b border-current pb-0.5 text-xs tracking-[0.2em]">לקביעת תור</p>
+      </div>
+    </a>
+  );
+}
+
+/** A round seal with the business name set around its rim, like a boutique stamp. */
+function Seal({ name, initial }: { name: string; initial: string }) {
+  // One rotated span per letter: SVG textPath mangles right-to-left text, this doesn't.
+  // Hebrew runs counter-clockwise so the top of the ring reads right to left.
+  const letters = Array.from(`${name} · קביעת תור אונליין · `);
+  const step = 360 / letters.length;
+  return (
+    <div className="absolute -top-14 end-6 h-28 w-28 rounded-full bg-stone-800 text-ivory shadow-xl sm:-top-[4.5rem] sm:end-16 sm:h-36 sm:w-36" aria-hidden>
+      {letters.map((ch, i) => (
+        <span
+          key={i}
+          className="absolute inset-0 flex justify-center pt-[7%] text-[8px] leading-none sm:text-[10px]"
+          style={{ transform: `rotate(${-i * step}deg)` }}
+        >
+          {ch}
+        </span>
+      ))}
+      <span className="absolute inset-[22%] grid place-items-center rounded-full border border-ivory/25 font-serif text-3xl font-light sm:text-4xl">{initial}</span>
+    </div>
+  );
 }
