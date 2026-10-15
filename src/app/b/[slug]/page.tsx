@@ -63,7 +63,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
   return (
     <main className="min-h-dvh bg-stone-50">
       {/* Hero: the owner's cover photo full-bleed, or an espresso field with her monogram until she uploads one */}
-      <header className="relative flex h-[92svh] max-h-[960px] min-h-[560px] flex-col overflow-hidden bg-stone-900 text-ivory">
+      <header className="relative flex h-[calc(100svh+2.5rem)] min-h-[600px] flex-col overflow-hidden bg-stone-900 text-ivory">
         {images.coverId ? (
           <>
             <Image src={imageUrl(images.coverId)} alt="" fill priority sizes="100vw" className="object-cover" />
@@ -84,7 +84,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
           </div>
         </nav>
 
-        <div id="top" className="relative mx-auto mt-auto w-full max-w-6xl px-6 pb-32 sm:px-10 sm:pb-28">
+        <div id="top" className="relative mx-auto mt-auto w-full max-w-6xl px-6 pb-24 sm:px-10 sm:pb-24">
           {business.address && <p className="text-xs tracking-[0.3em] text-ivory/80">{business.address}</p>}
           <h1 className="mt-4 max-w-4xl font-serif text-[3.25rem] font-light leading-[1.02] sm:text-8xl">{business.name}</h1>
           {business.tagline && <p className="mt-5 max-w-xl text-lg font-light leading-relaxed text-ivory/90 sm:text-xl">{business.tagline}</p>}
@@ -117,12 +117,12 @@ export default async function BusinessPage({ params, searchParams }: Props) {
       </section>
 
       {services.length > 0 && (
-        <section id="services" className="scroll-mt-6 py-20 sm:py-24">
+        <section id="services" className="scroll-mt-6 pt-16 pb-20 sm:pt-20 sm:pb-24">
           <SectionTitle eyebrow="הטיפולים שלנו" title="טיפולים" />
-          {/* Phones swipe through the cards; wider screens see them as a grid */}
-          <div className={`mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:mx-auto sm:grid sm:max-w-6xl sm:overflow-visible sm:px-6 ${tileColumns(services.length)}`}>
+          {/* Full-bleed tiles, edge to edge: stacked on phones, side by side on wider screens */}
+          <div className={`mt-10 grid grid-cols-1 gap-1 ${tileColumns(services.length)}`}>
             {services.map((s, i) => (
-              <ServiceCard key={s.id} service={s} index={i} href={bookHref(s.id)} />
+              <ServiceCard key={s.id} service={s} index={i} href={bookHref(s.id)} shape={tileShape(services.length)} />
             ))}
           </div>
         </section>
@@ -174,10 +174,18 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
 
 /** Picks a column count that leaves no lonely card in the last row where possible. */
 function tileColumns(count: number) {
-  if (count === 1) return "sm:max-w-md";
+  if (count === 1) return "";
   if (count === 2) return "sm:grid-cols-2";
+  if (count === 3) return "sm:grid-cols-3";
   if (count % 4 === 0) return "sm:grid-cols-2 lg:grid-cols-4";
   return "sm:grid-cols-2 lg:grid-cols-3";
+}
+
+/** Tall portrait tiles, flattened when there are only one or two so they don't tower over the screen. */
+function tileShape(count: number) {
+  if (count === 1) return "aspect-[4/5] sm:aspect-[21/9]";
+  if (count === 2) return "aspect-[4/5] sm:aspect-[5/4]";
+  return "aspect-[4/5] sm:aspect-[3/4]";
 }
 
 type ServiceCardData = { id: string; name: string; description: string; durationMin: number; priceLabel: string; imageId: string | null };
@@ -185,16 +193,16 @@ type ServiceCardData = { id: string; name: string; description: string; duration
 // Soft fills for cards whose owner hasn't added a photo yet.
 const EMPTY_FILLS = ["bg-sand", "bg-nude", "bg-stone-200"];
 
-function ServiceCard({ service: s, index, href }: { service: ServiceCardData; index: number; href: string }) {
+function ServiceCard({ service: s, index, href, shape }: { service: ServiceCardData; index: number; href: string; shape: string }) {
   const photo = Boolean(s.imageId);
   return (
     <a
       href={href}
-      className={`group relative block aspect-[3/4] w-[78%] shrink-0 snap-center overflow-hidden sm:w-auto ${photo ? "bg-stone-900" : EMPTY_FILLS[index % EMPTY_FILLS.length]}`}
+      className={`group relative block overflow-hidden ${shape} ${photo ? "bg-stone-900" : EMPTY_FILLS[index % EMPTY_FILLS.length]}`}
     >
       {s.imageId ? (
         <>
-          <Image src={imageUrl(s.imageId)} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 80vw" className="object-cover transition duration-700 group-hover:scale-105" />
+          <Image src={imageUrl(s.imageId)} alt="" fill sizes="(min-width: 1024px) 34vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition duration-700 group-hover:scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/10 to-transparent" />
         </>
       ) : (
@@ -202,8 +210,8 @@ function ServiceCard({ service: s, index, href }: { service: ServiceCardData; in
           {String(index + 1).padStart(2, "0")}
         </span>
       )}
-      <div className={`absolute inset-x-0 bottom-0 p-6 ${photo ? "text-ivory" : "text-stone-900"}`}>
-        <p className="font-serif text-[1.65rem] font-light leading-tight">{s.name}</p>
+      <div className={`absolute inset-x-0 bottom-0 p-7 sm:p-8 ${photo ? "text-ivory" : "text-stone-900"}`}>
+        <p className="font-serif text-[2rem] font-light leading-tight sm:text-[2.25rem]">{s.name}</p>
         {s.description && <p className="mt-2 line-clamp-2 text-sm leading-relaxed opacity-85">{s.description}</p>}
         <p className="mt-2 text-sm opacity-85">{s.durationMin} דקות · {s.priceLabel}</p>
         <p className="mt-4 inline-block border-b border-current pb-0.5 text-xs tracking-[0.2em]">לקביעת תור</p>
