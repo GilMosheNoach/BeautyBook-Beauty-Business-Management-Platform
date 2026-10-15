@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { requireBusiness } from "@/lib/session";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { newToken } from "@/lib/tokens";
+import { inviteLink, inviteText } from "@/lib/invite";
 
 export type InviteState = { error?: string; link?: string; phone?: string; text?: string } | undefined;
 
@@ -49,10 +50,8 @@ export async function createInvitationAction(_: InviteState, form: FormData): Pr
     },
   });
 
-  const base = (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
-  const link = `${base}/b/${business.slug}?invite=${token}`;
-  const greeting = d.clientName ? `היי ${d.clientName}! ` : "היי! ";
-  const body = d.message || `מוזמנת לקבוע תור${service ? ` ל${service.name}` : ""} ב${business.name}.`;
+  const link = inviteLink(business.slug, token);
+  const text = inviteText({ link, businessName: business.name, clientName: d.clientName, serviceName: service?.name, message: d.message });
   revalidatePath("/dashboard/invite");
-  return { link, phone: d.clientPhone ? normalizePhone(d.clientPhone) : "", text: `${greeting}${body}\nלבחירת מועד: ${link}` };
+  return { link, phone: d.clientPhone ? normalizePhone(d.clientPhone) : "", text };
 }

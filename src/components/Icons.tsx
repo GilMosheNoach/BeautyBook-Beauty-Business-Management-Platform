@@ -59,3 +59,6 @@ export const ExternalIcon = (p: IconProps) => (
 export const NoteIcon = (p: IconProps) => (
   <Svg {...p}><path d="M5 4.5h14v11l-4 4H5z" /><path d="M15 19.5v-4h4M8.5 9h7M8.5 12.5h5" /></Svg>
 );
+export const PlusIcon = (p: IconProps) => (
+  <Svg {...p}><path d="M12 5v14M5 12h14" /></Svg>
+);
