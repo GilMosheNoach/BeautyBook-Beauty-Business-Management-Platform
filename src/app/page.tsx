@@ -64,7 +64,7 @@ export default async function Home() {
         </nav>
         <div className="relative mx-auto mt-auto w-full max-w-6xl px-6 pb-20 sm:px-10 sm:pb-24">
           <p className="text-xs tracking-[0.3em] text-ivory/80">לקוסמטיקאיות ובעלות עסקי יופי</p>
-          <h1 className="mt-5 max-w-4xl font-serif text-5xl font-light leading-[1.05] sm:text-8xl">
+          <h1 className="mt-5 max-w-4xl font-serif text-5xl font-extralight leading-[1.05] sm:text-8xl">
             התורים של העסק שלך,
             <br />
             בקישור אחד.
@@ -81,13 +81,13 @@ export default async function Home() {
       <main className="mx-auto max-w-5xl px-4">
         <div className="py-16 text-center sm:py-20">
           <p className="eyebrow">מה מקבלים</p>
-          <h2 className="mt-2 font-serif text-3xl font-light sm:text-4xl">כל מה שהעסק צריך, במקום אחד</h2>
+          <h2 className="mt-2 font-serif text-3xl font-extralight sm:text-4xl">כל מה שהעסק צריך, במקום אחד</h2>
         </div>
         <section className="grid gap-px border border-stone-200 bg-stone-200 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f, i) => (
             <div key={f.title} className="bg-stone-50 p-7">
               <p className="font-display text-2xl lining-nums text-brand-600">{String(i + 1).padStart(2, "0")}</p>
-              <h3 className="mt-3 font-serif text-xl">{f.title}</h3>
+              <h3 className="mt-3 font-serif font-light text-xl">{f.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-stone-600">{f.text}</p>
             </div>
           ))}

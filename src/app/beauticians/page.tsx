@@ -41,7 +41,7 @@ export default async function BeauticiansPage() {
       <main className="mx-auto max-w-5xl px-4 pb-20">
         <section className="py-14 text-center sm:py-20">
           <p className="eyebrow">קביעת תור אונליין</p>
-          <h1 className="mt-4 font-serif text-4xl font-light sm:text-6xl">קוסמטיקאיות</h1>
+          <h1 className="mt-4 font-serif text-4xl font-extralight sm:text-6xl">קוסמטיקאיות</h1>
           <p className="mx-auto mt-4 max-w-xl text-stone-600">{DESCRIPTION}</p>
         </section>
         {businesses.length === 0 ? (
@@ -51,7 +51,7 @@ export default async function BeauticiansPage() {
             {businesses.map((b) => (
               <li key={b.slug} className="bg-stone-50">
                 <a href={businessUrl(b.slug)} className="block h-full p-7 hover:bg-ivory">
-                  <h2 className="font-serif text-2xl font-light">{b.name}</h2>
+                  <h2 className="font-serif text-2xl font-extralight">{b.name}</h2>
                   {b.tagline && <p className="mt-2 text-sm text-stone-600">{b.tagline}</p>}
                   {b.address && (
                     <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-stone-600"><PinIcon size={14} />{b.address}</p>

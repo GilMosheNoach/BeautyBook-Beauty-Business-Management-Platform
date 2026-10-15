@@ -103,13 +103,13 @@ export default async function BusinessPage({ params, searchParams }: Props) {
             <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/25 to-stone-950/40" />
           </>
         ) : (
-          <div aria-hidden className="pointer-events-none absolute -bottom-24 end-[-4rem] select-none font-serif text-[28rem] font-light leading-none text-ivory/[0.04] sm:text-[40rem]">
+          <div aria-hidden className="pointer-events-none absolute -bottom-24 end-[-4rem] select-none font-serif text-[28rem] font-extralight leading-none text-ivory/[0.04] sm:text-[40rem]">
             {initial}
           </div>
         )}
 
         <nav className="relative z-10 flex items-center justify-between gap-4 border-b border-ivory/15 px-5 py-4 sm:px-10">
-          <a href="#top" className="truncate font-serif text-lg tracking-[0.2em]">{business.name}</a>
+          <a href="#top" className="truncate font-serif font-light text-lg tracking-[0.2em]">{business.name}</a>
           <div className="flex shrink-0 items-center gap-6 text-sm tracking-wide">
             {services.length > 0 && <a href="#services" className="hidden text-ivory/85 hover:text-ivory sm:inline">טיפולים</a>}
             <a href="#gallery" className="hidden text-ivory/85 hover:text-ivory sm:inline">גלריה</a>
@@ -119,7 +119,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
 
         <div id="top" className="relative mx-auto mt-auto w-full max-w-6xl px-6 pb-24 sm:px-10 sm:pb-24">
           {business.address && <p className="text-xs tracking-[0.3em] text-ivory/80">{business.address}</p>}
-          <h1 className="mt-4 max-w-4xl font-serif text-[3.25rem] font-light leading-[1.02] sm:text-8xl">{business.name}</h1>
+          <h1 className="mt-4 max-w-4xl font-serif text-[3.25rem] font-extralight leading-[1.02] sm:text-8xl">{business.name}</h1>
           {business.tagline && <p className="mt-5 max-w-xl text-lg font-light leading-relaxed text-ivory/90 sm:text-xl">{business.tagline}</p>}
           <div className="mt-9 flex flex-wrap gap-3">
             <a href={bookHref()} className="btn bg-ivory px-8 py-3.5 tracking-[0.12em] text-stone-900 hover:bg-white">לקביעת תור</a>
@@ -134,7 +134,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
       <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-stone-50 px-6 pb-4 pt-14 text-center sm:pt-16">
         {invitation && (
           <div className="mx-auto mb-10 max-w-xl border border-stone-300 bg-ivory px-6 py-5">
-            <p className="font-serif text-lg">{invitation.clientName ? `${invitation.clientName}, ` : ""}קיבלת הזמנה אישית</p>
+            <p className="font-serif font-light text-lg">{invitation.clientName ? `${invitation.clientName}, ` : ""}קיבלת הזמנה אישית</p>
             {invitation.message && <p className="mt-1 text-sm text-stone-700">{invitation.message}</p>}
           </div>
         )}
@@ -144,7 +144,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
           </p>
         )}
         {business.about && (
-          <p className="mx-auto max-w-2xl whitespace-pre-line font-serif text-2xl font-light leading-relaxed sm:text-[1.75rem]">{business.about}</p>
+          <p className="mx-auto max-w-2xl whitespace-pre-line font-serif text-2xl font-extralight leading-relaxed sm:text-[1.75rem]">{business.about}</p>
         )}
       </section>
 
@@ -179,7 +179,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
           <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 sm:grid-cols-2 sm:gap-16 sm:px-10 sm:py-28">
             <div className={images.aboutId ? "" : "sm:col-span-2 sm:mx-auto sm:max-w-2xl sm:text-center"}>
               <p className="eyebrow">קצת עליי</p>
-              <h2 className="mt-3 font-serif text-4xl font-light leading-tight sm:text-5xl">{business.bioTitle || business.name}</h2>
+              <h2 className="mt-3 font-serif text-4xl font-extralight leading-tight sm:text-5xl">{business.bioTitle || business.name}</h2>
               {business.bio && <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-stone-700 sm:text-lg">{business.bio}</p>}
               <a href={bookHref()} className="btn-primary mt-9 px-8 py-3.5 tracking-[0.12em]">לקביעת תור</a>
             </div>
@@ -193,7 +193,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
       )}
 
       <footer className="bg-stone-900 px-6 py-14 text-center text-ivory">
-        <p className="font-serif text-2xl font-light">{business.name}</p>
+        <p className="font-serif text-2xl font-extralight">{business.name}</p>
         <div className="mt-5 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ivory/80">
           {business.address && <span className="inline-flex items-center gap-2"><PinIcon size={16} />{business.address}</span>}
           {business.phone && (
@@ -221,7 +221,7 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="text-center">
       <p className="eyebrow">{eyebrow}</p>
-      <h2 className="mt-2 font-serif text-3xl font-light sm:text-4xl">{title}</h2>
+      <h2 className="mt-2 font-serif text-3xl font-extralight sm:text-4xl">{title}</h2>
     </div>
   );
 }
@@ -265,7 +265,7 @@ function ServiceCard({ service: s, index, href, shape }: { service: ServiceCardD
         </span>
       )}
       <div className={`absolute inset-x-0 bottom-0 p-7 sm:p-8 ${photo ? "text-ivory" : "text-stone-900"}`}>
-        <p className="font-serif text-[2rem] font-light leading-tight sm:text-[2.25rem]">{s.name}</p>
+        <p className="font-serif text-[2rem] font-extralight leading-tight sm:text-[2.25rem]">{s.name}</p>
         {s.description && <p className="mt-2 line-clamp-2 text-sm leading-relaxed opacity-85">{s.description}</p>}
         <p className="mt-2 text-sm opacity-85">{s.durationMin} דקות · {s.priceLabel}</p>
         <p className="mt-4 inline-block border-b border-current pb-0.5 text-xs tracking-[0.2em]">לקביעת תור</p>

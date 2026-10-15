@@ -79,7 +79,7 @@ export default async function DesignPage() {
                     {imageId && <Image src={imageUrl(imageId)} alt="" fill sizes="56px" className="object-cover" />}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-serif text-lg">{s.name}</p>
+                    <p className="truncate font-serif font-light text-lg">{s.name}</p>
                     {!s.active && <p className="muted">מוסתר מהדף</p>}
                   </div>
                   <div className="flex flex-wrap items-start justify-end gap-1">
