@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --font-heebo: "Heebo";
+  --font-sans: "Assistant";
+  --font-serif: "Frank Ruhl Libre";
+  --font-display: "Cormorant Garamond";
 }
 
 body {
@@ -12,42 +14,48 @@ body {
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition
-      disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium tracking-wide transition
+      disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300;
   }
   .btn-primary {
-    @apply btn bg-brand-600 text-white hover:bg-brand-700;
+    @apply btn bg-brand-600 text-ivory hover:bg-brand-700;
+  }
+  .btn-dark {
+    @apply btn bg-stone-900 text-ivory hover:bg-stone-800;
   }
   .btn-secondary {
-    @apply btn border border-stone-300 bg-white text-stone-800 hover:bg-stone-100;
+    @apply btn border border-stone-900/80 bg-transparent text-stone-900 hover:bg-stone-900 hover:text-ivory;
   }
   .btn-ghost {
     @apply btn text-stone-700 hover:bg-stone-100;
   }
   .btn-danger {
-    @apply btn border border-red-200 bg-white text-red-700 hover:bg-red-50;
+    @apply btn border border-red-200 bg-ivory text-red-800 hover:bg-red-50;
   }
   .btn-sm {
     @apply px-3 py-1.5 text-xs;
   }
   .input {
-    @apply block w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900
-      placeholder:text-stone-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100 sm:text-sm;
+    @apply block w-full rounded-xl border border-stone-300 bg-ivory px-3 py-2.5 text-base text-stone-900
+      placeholder:text-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 sm:text-sm;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-stone-700;
   }
   .card {
-    @apply rounded-2xl border border-stone-200 bg-white p-4 shadow-sm sm:p-5;
+    @apply rounded-2xl border border-stone-200 bg-ivory p-4 sm:p-6;
   }
   .badge {
-    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center rounded-xl px-2 py-0.5 text-xs font-medium tracking-wide;
   }
   .h1 {
-    @apply text-2xl font-bold tracking-tight text-stone-900;
+    @apply font-serif text-3xl font-light tracking-tight text-stone-900;
   }
   .h2 {
-    @apply text-lg font-semibold text-stone-900;
+    @apply font-serif text-xl font-normal text-stone-900;
+  }
+  .eyebrow {
+    @apply text-xs tracking-[0.25em] text-stone-500;
   }
   .muted {
     @apply text-sm text-stone-500;

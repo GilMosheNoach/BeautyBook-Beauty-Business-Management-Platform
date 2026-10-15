@@ -23,11 +23,11 @@ export function NewAppointmentForm({ services, clients, date, time, clientId }: 
     <form action={action} className="card space-y-4">
       <div>
         <span className="label">לקוחה</span>
-        <div className="mb-2 flex rounded-xl border border-stone-300 bg-white p-0.5 text-sm">
-          <button type="button" onClick={() => setMode("existing")} disabled={!clients.length} className={`flex-1 rounded-lg px-3 py-1.5 ${mode === "existing" ? "bg-brand-600 text-white" : ""}`}>
+        <div className="mb-2 flex border border-stone-300 bg-ivory text-sm">
+          <button type="button" onClick={() => setMode("existing")} disabled={!clients.length} className={`flex-1 px-3 py-2 ${mode === "existing" ? "bg-stone-900 text-ivory" : ""}`}>
             קיימת
           </button>
-          <button type="button" onClick={() => setMode("new")} className={`flex-1 rounded-lg px-3 py-1.5 ${mode === "new" ? "bg-brand-600 text-white" : ""}`}>
+          <button type="button" onClick={() => setMode("new")} className={`flex-1 px-3 py-2 ${mode === "new" ? "bg-stone-900 text-ivory" : ""}`}>
             חדשה
           </button>
         </div>

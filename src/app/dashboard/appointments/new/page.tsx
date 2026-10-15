@@ -22,7 +22,7 @@ export default async function NewAppointmentPage({ searchParams }: { searchParam
       <Link href={`/dashboard?date=${date}`} className="muted">→ חזרה ליומן</Link>
       <h1 className="h1">תור חדש</h1>
       {services.length === 0 ? (
-        <p className="card">קודם צריך להוסיף שירות. <Link className="font-semibold text-brand-700" href="/dashboard/services">לשירותים</Link></p>
+        <p className="card">קודם צריך להוסיף שירות. <Link className="font-medium text-brand-600 underline underline-offset-4" href="/dashboard/services">לשירותים</Link></p>
       ) : (
         <NewAppointmentForm
           services={services.map((s) => ({ id: s.id, name: s.name, durationMin: s.durationMin, price: formatPrice(s.priceAgorot) }))}

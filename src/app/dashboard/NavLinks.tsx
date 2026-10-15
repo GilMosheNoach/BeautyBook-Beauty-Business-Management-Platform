@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CalendarIcon, ClockIcon, ImageIcon, SendIcon, SettingsIcon, SparkleIcon, UsersIcon } from "@/components/Icons";
 
 const LINKS = [
-  { href: "/dashboard", label: "יומן", icon: "📅" },
-  { href: "/dashboard/clients", label: "לקוחות", icon: "👩" },
-  { href: "/dashboard/invite", label: "הזמנות", icon: "💌" },
-  { href: "/dashboard/services", label: "שירותים", icon: "💅" },
-  { href: "/dashboard/availability", label: "זמינות", icon: "🕘" },
-  { href: "/dashboard/settings", label: "הגדרות", icon: "⚙️" },
+  { href: "/dashboard", label: "יומן", Icon: CalendarIcon },
+  { href: "/dashboard/clients", label: "לקוחות", Icon: UsersIcon },
+  { href: "/dashboard/invite", label: "הזמנות", Icon: SendIcon },
+  { href: "/dashboard/services", label: "שירותים", Icon: SparkleIcon },
+  { href: "/dashboard/availability", label: "זמינות", Icon: ClockIcon },
+  { href: "/dashboard/design", label: "עיצוב הדף", Icon: ImageIcon },
+  { href: "/dashboard/settings", label: "הגדרות", Icon: SettingsIcon },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -20,12 +22,12 @@ function isActive(pathname: string, href: string) {
 export function TopNav() {
   const pathname = usePathname();
   return (
-    <nav className="hidden gap-1 md:flex">
+    <nav className="hidden gap-6 md:flex">
       {LINKS.map((l) => (
         <Link
           key={l.href}
           href={l.href}
-          className={`rounded-lg px-3 py-2 text-sm font-medium ${isActive(pathname, l.href) ? "bg-brand-50 text-brand-700" : "text-stone-600 hover:bg-stone-100"}`}
+          className={`border-b py-1 text-sm tracking-wide transition ${isActive(pathname, l.href) ? "border-brand-600 text-stone-900" : "border-transparent text-stone-500 hover:text-stone-900"}`}
         >
           {l.label}
         </Link>
@@ -37,15 +39,15 @@ export function TopNav() {
 export function BottomNav() {
   const pathname = usePathname();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-stone-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
-      {LINKS.map((l) => (
+    <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-7 border-t border-stone-200 bg-ivory/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
+      {LINKS.map(({ href, label, Icon }) => (
         <Link
-          key={l.href}
-          href={l.href}
-          className={`flex flex-col items-center gap-0.5 py-2 text-[11px] font-medium ${isActive(pathname, l.href) ? "text-brand-700" : "text-stone-500"}`}
+          key={href}
+          href={href}
+          className={`flex flex-col items-center gap-1 py-2 text-[10px] tracking-wide ${isActive(pathname, href) ? "text-brand-600" : "text-stone-500"}`}
         >
-          <span className="text-lg leading-none" aria-hidden>{l.icon}</span>
-          {l.label}
+          <Icon size={20} />
+          {label}
         </Link>
       ))}
     </nav>

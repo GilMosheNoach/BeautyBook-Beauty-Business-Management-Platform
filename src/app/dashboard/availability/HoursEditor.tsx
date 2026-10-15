@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { saveHoursAction } from "@/server/actions/availability";
 import { FormMessage } from "@/components/FormMessage";
+import { CloseIcon } from "@/components/Icons";
 import { SubmitButton } from "@/components/SubmitButton";
 import { WEEKDAYS_HE, hhmmToMinutes, minutesToHHMM } from "@/lib/time";
 
@@ -36,7 +37,7 @@ export function HoursEditor({ initial }: { initial: Range[] }) {
                   <input type="time" step={900} className="input w-28" value={minutesToHHMM(r.startMin)} onChange={(e) => update(idx, { startMin: hhmmToMinutes(e.target.value) })} />
                   <span className="text-stone-400">–</span>
                   <input type="time" step={900} className="input w-28" value={minutesToHHMM(r.endMin)} onChange={(e) => update(idx, { endMin: hhmmToMinutes(e.target.value) })} />
-                  <button type="button" className="btn-ghost btn-sm" onClick={() => remove(idx)} aria-label="הסרה">✕</button>
+                  <button type="button" className="btn-ghost btn-sm" onClick={() => remove(idx)} aria-label="הסרה"><CloseIcon size={16} /></button>
                 </div>
               ))}
             </div>

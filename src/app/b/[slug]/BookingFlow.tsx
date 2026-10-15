@@ -6,18 +6,18 @@ import { bookAppointmentAction } from "@/server/actions/publicBooking";
 
 type Service = { id: string; name: string; description: string; durationMin: number; priceLabel: string };
 type Day = { date: string; slots: string[] };
-type Invite = { token: string; clientName: string; clientPhone: string; serviceId: string | null } | null;
+type Invite = { token: string; clientName: string; clientPhone: string } | null;
 
-type Props = { slug: string; services: Service[]; timezone: string; invite: Invite; requiresApproval: boolean };
+type Props = { slug: string; services: Service[]; timezone: string; invite: Invite; requiresApproval: boolean; initialServiceId: string | null };
 
 function nextDateKey(key: string) {
   const [y, m, d] = key.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d + 1)).toISOString().slice(0, 10);
 }
 
-export function BookingFlow({ slug, services, timezone, invite, requiresApproval }: Props) {
+export function BookingFlow({ slug, services, timezone, invite, requiresApproval, initialServiceId }: Props) {
   const router = useRouter();
-  const [serviceId, setServiceId] = useState<string | null>(invite?.serviceId ?? null);
+  const [serviceId, setServiceId] = useState<string | null>(initialServiceId);
   const [days, setDays] = useState<Day[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -89,25 +89,26 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-14">
       {/* Step 1: service */}
-      <section className="card">
-        <h2 className="h2 mb-3">1. בחירת טיפול</h2>
+      <section>
+        <StepTitle n="01">בחירת טיפול</StepTitle>
         {services.length === 0 && <p className="muted">עוד לא הוגדרו שירותים להזמנה.</p>}
-        <div className="grid gap-2">
+        <div className="border-t border-stone-200">
           {services.map((s) => (
             <button
               key={s.id}
               type="button"
               onClick={() => setServiceId(s.id)}
-              className={`flex items-center justify-between gap-3 rounded-xl border p-3 text-start transition ${s.id === serviceId ? "border-brand-500 bg-brand-50 ring-1 ring-brand-500" : "border-stone-200 hover:border-brand-300"}`}
+              aria-pressed={s.id === serviceId}
+              className={`flex w-full items-center justify-between gap-3 border-b border-stone-200 px-4 py-5 text-start transition ${s.id === serviceId ? "bg-stone-50 shadow-[inset_-2px_0_0_theme(colors.brand.600)]" : "hover:bg-stone-50"}`}
             >
               <span className="min-w-0">
-                <span className="block font-medium">{s.name}</span>
+                <span className="block font-serif text-lg">{s.name}</span>
                 {s.description && <span className="mt-0.5 block text-sm text-stone-500">{s.description}</span>}
-                <span className="mt-0.5 block text-xs text-stone-500">{s.durationMin} דקות</span>
+                <span className="mt-1 block text-xs tracking-wide text-stone-500">{s.durationMin} דקות</span>
               </span>
-              <span className="shrink-0 font-semibold text-brand-700">{s.priceLabel}</span>
+              <span className="shrink-0 font-serif text-lg">{s.priceLabel}</span>
             </button>
           ))}
         </div>
@@ -115,8 +116,8 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
 
       {/* Step 2: day + time */}
       {service && (
-        <section className="card">
-          <h2 className="h2 mb-3">2. בחירת מועד</h2>
+        <section>
+          <StepTitle n="02">בחירת מועד</StepTitle>
           {loading && days.length === 0 ? (
             <p className="muted">טוענת שעות פנויות…</p>
           ) : (
@@ -134,16 +135,16 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
                         setDate(d.date);
                         setSlot(null);
                       }}
-                      className={`flex w-14 shrink-0 flex-col items-center rounded-xl border py-2 text-sm transition disabled:opacity-35 ${d.date === date ? "border-brand-600 bg-brand-600 text-white" : "border-stone-200 bg-white hover:border-brand-300"}`}
+                      className={`flex w-14 shrink-0 flex-col items-center border py-2.5 text-sm transition disabled:opacity-35 ${d.date === date ? "border-stone-900 bg-stone-900 text-ivory" : "border-stone-300 bg-ivory hover:border-stone-900"}`}
                     >
                       <span className="text-xs">{dayFmt.format(dt)}</span>
-                      <span className="text-lg font-semibold">{dt.getUTCDate()}</span>
+                      <span className="font-serif text-xl">{dt.getUTCDate()}</span>
                       <span className="text-[10px] opacity-70">{dt.getUTCMonth() + 1}/{String(dt.getUTCFullYear()).slice(2)}</span>
                     </button>
                   );
                 })}
                 {hasMore && days.length > 0 && (
-                  <button type="button" disabled={loading} onClick={() => load(nextDateKey(days.at(-1)!.date))} className="shrink-0 rounded-xl border border-dashed border-stone-300 px-3 text-sm text-stone-600">
+                  <button type="button" disabled={loading} onClick={() => load(nextDateKey(days.at(-1)!.date))} className="shrink-0 border border-dashed border-stone-300 px-3 text-sm text-stone-600">
                     {loading ? "…" : "עוד ימים"}
                   </button>
                 )}
@@ -152,15 +153,16 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
                 <p className="muted mt-2">אין שעות פנויות בימים האלה. נסי &quot;עוד ימים&quot;.</p>
               )}
               {selectedDay && (
-                <div className="mt-3">
-                  <p className="mb-2 text-sm font-medium text-stone-700">{longFmt.format(keyToDate(selectedDay.date))}</p>
-                  <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                <div className="mt-5">
+                  <p className="mb-3 text-sm text-stone-600">{longFmt.format(keyToDate(selectedDay.date))}</p>
+                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                     {selectedDay.slots.map((s) => (
                       <button
                         key={s}
                         type="button"
                         onClick={() => setSlot(s)}
-                        className={`rounded-xl border py-2 text-sm font-medium transition ${s === slot ? "border-brand-600 bg-brand-600 text-white" : "border-stone-200 bg-white hover:border-brand-300"}`}
+                        aria-pressed={s === slot}
+                        className={`border py-3 text-sm transition ${s === slot ? "border-brand-600 bg-brand-600 text-ivory" : "border-stone-300 bg-ivory hover:border-stone-900"}`}
                       >
                         {timeFmt.format(new Date(s))}
                       </button>
@@ -175,12 +177,12 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
 
       {/* Step 3: details */}
       {service && slot && (
-        <section className="card">
-          <h2 className="h2 mb-1">3. הפרטים שלך</h2>
-          <p className="muted mb-3">
+        <section>
+          <StepTitle n="03">הפרטים שלך</StepTitle>
+          <p className="muted -mt-2 mb-5">
             {service.name} · {longFmt.format(keyToDate(date!))} בשעה {timeFmt.format(new Date(slot))}
           </p>
-          <form action={submit} className="space-y-3">
+          <form action={submit} className="space-y-4">
             <div>
               <label className="label" htmlFor="bk-name">שם מלא</label>
               <input className="input" id="bk-name" name="name" autoComplete="name" defaultValue={invite?.clientName} required minLength={2} />
@@ -195,7 +197,7 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
             </div>
             <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
             {error && <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-            <button type="submit" className="btn-primary w-full py-3 text-base" disabled={pending}>
+            <button type="submit" className="btn-primary w-full py-4 text-base tracking-[0.15em]" disabled={pending}>
               {pending ? "שולחת…" : requiresApproval ? "שליחת בקשה לתור" : "קביעת התור"}
             </button>
             {requiresApproval && <p className="muted text-center">התור יאושר סופית על ידי בעלת העסק.</p>}
@@ -204,5 +206,14 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
       )}
       {error && !slot && <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
     </div>
+  );
+}
+
+function StepTitle({ n, children }: { n: string; children: React.ReactNode }) {
+  return (
+    <h3 className="mb-5 flex items-baseline gap-3">
+      <span className="font-display text-2xl lining-nums text-brand-600">{n}</span>
+      <span className="font-serif text-2xl font-light">{children}</span>
+    </h3>
   );
 }

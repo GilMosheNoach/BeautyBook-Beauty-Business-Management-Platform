@@ -58,7 +58,6 @@ export async function createBusinessAction(_: FormState, form: FormData): Promis
 const settingsSchema = z.object({
   name: z.string().trim().min(2, "נא להזין את שם העסק").max(80),
   slug: z.string().transform(normalizeSlug),
-  about: z.string().trim().max(1000),
   phone: z.string().trim().max(20),
   address: z.string().trim().max(120),
   instagram: z.string().trim().max(60),

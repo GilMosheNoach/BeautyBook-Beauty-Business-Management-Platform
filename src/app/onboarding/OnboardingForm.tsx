@@ -20,7 +20,7 @@ export function OnboardingForm({ baseUrl }: { baseUrl: string }) {
         </div>
         <div>
           <label className="label" htmlFor="slug">כתובת הדף שלך</label>
-          <div className="flex items-stretch overflow-hidden rounded-xl border border-stone-300 bg-white focus-within:ring-2 focus-within:ring-brand-100" dir="ltr">
+          <div className="flex items-stretch overflow-hidden rounded-xl border border-stone-300 bg-ivory focus-within:border-stone-900" dir="ltr">
             <span className="flex items-center bg-stone-100 px-3 text-sm text-stone-500">{baseUrl}/b/</span>
             <input
               className="min-w-0 flex-1 px-3 py-2.5 text-base outline-none sm:text-sm"
@@ -51,7 +51,7 @@ export function OnboardingForm({ baseUrl }: { baseUrl: string }) {
         <p className="muted">סמני מה את נותנת. מחירים ומשכים אפשר לשנות אחר כך.</p>
         <div className="grid gap-2 sm:grid-cols-2">
           {STARTER_SERVICES.map((s) => (
-            <label key={s.key} className="flex cursor-pointer items-center gap-3 rounded-xl border border-stone-200 p-3 has-[:checked]:border-brand-400 has-[:checked]:bg-brand-50">
+            <label key={s.key} className="flex cursor-pointer items-center gap-3 rounded-xl border border-stone-200 p-3 has-[:checked]:border-stone-900 has-[:checked]:bg-stone-100">
               <input type="checkbox" name="starter" value={s.key} className="h-4 w-4 accent-brand-600" />
               <span className="flex-1 text-sm font-medium">{s.name}</span>
               <span className="text-xs text-stone-500">{s.durationMin} דק׳ · ₪{s.price}</span>
