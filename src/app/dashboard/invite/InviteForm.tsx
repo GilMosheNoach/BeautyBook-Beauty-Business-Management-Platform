@@ -4,22 +4,21 @@ import { useActionState } from "react";
 import { createInvitationAction } from "@/server/actions/invitations";
 import { SubmitButton } from "@/components/SubmitButton";
 import { CopyButton } from "@/components/CopyButton";
+import { whatsappNumber } from "@/lib/phone";
 
 type Props = {
   services: { id: string; name: string }[];
   defaults: { clientName: string; clientPhone: string };
+  onAnother: () => void;
+  onClose: () => void;
 };
 
-function waNumber(phone: string) {
-  return phone.startsWith("0") ? "972" + phone.slice(1) : phone;
-}
-
-export function InviteForm({ services, defaults }: Props) {
+export function InviteForm({ services, defaults, onAnother, onClose }: Props) {
   const [state, action] = useActionState(createInvitationAction, undefined);
 
   if (state?.link) {
     const text = state.text ?? state.link;
-    const wa = state.phone ? `https://wa.me/${waNumber(state.phone)}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`;
+    const wa = state.phone ? `https://wa.me/${whatsappNumber(state.phone)}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`;
     return (
       <div className="space-y-4">
         <p className="rounded-xl bg-stone-100 px-3 py-2 text-sm text-stone-900">ההזמנה מוכנה! שלחי אותה ללקוחה:</p>
@@ -29,7 +28,10 @@ export function InviteForm({ services, defaults }: Props) {
           {state.phone && <a className="btn-secondary" href={`sms:${state.phone}?&body=${encodeURIComponent(text)}`}>שליחה ב-SMS</a>}
           <CopyButton text={text} label="העתקת ההודעה" />
         </div>
-        <a href="/dashboard/invite" className="btn-ghost btn-sm">הזמנה נוספת</a>
+        <div className="flex gap-2 border-t border-stone-100 pt-3">
+          <button type="button" onClick={onAnother} className="btn-ghost btn-sm">הזמנה נוספת</button>
+          <button type="button" onClick={onClose} className="btn-ghost btn-sm">סגירה</button>
+        </div>
       </div>
     );
   }
