@@ -19,7 +19,7 @@ export default async function TestCheckoutPage({ params }: { params: Promise<{ t
 
   return (
     <AuthShell title="עמוד תשלום לדוגמה" subtitle="כאן יופיע העמוד המאובטח של חברת הסליקה.">
-      <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-800">
+      <p className="rounded-xl bg-stone-100 px-3 py-2 text-sm text-stone-900">
         מצב בדיקה: לא מזינים כאן פרטי כרטיס ולא מתבצע שום חיוב. בוחרים איך הכרטיס יתנהג בחיובים הבאים.
       </p>
       <form action={action} className="mt-5 space-y-3">

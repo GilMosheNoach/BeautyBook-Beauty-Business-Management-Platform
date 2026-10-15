@@ -15,8 +15,8 @@ export const metadata = { title: "מנוי והפניות" };
 
 const STATUS_CLASS = {
   INCOMPLETE: "bg-stone-200 text-stone-700",
-  TRIALING: "bg-sky-100 text-sky-800",
-  ACTIVE: "bg-emerald-100 text-emerald-800",
+  TRIALING: "border border-stone-900 text-stone-900",
+  ACTIVE: "bg-stone-900 text-ivory",
   PAST_DUE: "bg-red-100 text-red-800",
   CANCELED: "bg-stone-200 text-stone-700",
 } as const;
@@ -114,7 +114,7 @@ export default async function BillingPage() {
         </section>
 
         {isTestBilling() && (
-          <section className="card border-amber-200 bg-amber-50">
+          <section className="card border-dashed border-stone-400 bg-stone-50">
             <h2 className="h2">כלי בדיקה</h2>
             <p className="muted mt-1">מדמה את סוף תקופת הניסיון או החודש ומחייב עכשיו לפי ההנחות הנוכחיות. מופיע רק במצב בדיקה.</p>
             <form action={simulateRenewalAction} className="mt-3">
