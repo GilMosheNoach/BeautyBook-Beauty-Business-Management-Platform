@@ -80,7 +80,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
             <CopyButton text={bookingUrl} />
           </div>
           {serviceCount === 0 && (
-            <p className="mt-3 text-sm text-amber-800">
+            <p className="mt-3 text-sm text-stone-900">
               עוד לא הגדרת שירותים, ולכן לקוחות לא יכולות להזמין. <Link className="font-semibold underline" href="/dashboard/services">הוספת שירות</Link>
             </p>
           )}
@@ -88,7 +88,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
       )}
 
       {pending.length > 0 && (
-        <section className="card border-[#c9a978]">
+        <section className="card border-stone-900">
           <h2 className="h2">בקשות ממתינות לאישור ({pending.length})</h2>
           <ul className="mt-3 divide-y divide-stone-100">
             {pending.map((a) => (
@@ -191,7 +191,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
                     return (
                       <div
                         key={t.id}
-                        className="pointer-events-none absolute inset-x-1 rounded-lg bg-[repeating-linear-gradient(45deg,#e3d9cc_0,#e3d9cc_6px,#efe8df_6px,#efe8df_12px)] p-1 text-xs text-stone-600"
+                        className="pointer-events-none absolute inset-x-1 rounded-lg bg-[repeating-linear-gradient(45deg,#e5e5e5_0,#e5e5e5_6px,#f3f3f3_6px,#f3f3f3_12px)] p-1 text-xs text-stone-600"
                         style={{ top: (top - gridStart) * PX_PER_MIN, height: (bottom - top) * PX_PER_MIN }}
                       >
                         {t.reason || "חסום"}
@@ -218,12 +218,12 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
 function ApptBlock({ a, tz, top, height, compact }: { a: Appt; tz: string; top: number; height: number; compact: boolean }) {
   const color =
     a.status === "PENDING"
-      ? "border border-dashed border-[#b08a57] bg-ivory text-stone-900"
+      ? "border border-dashed border-stone-500 bg-ivory text-stone-900"
       : a.status === "COMPLETED"
         ? "border border-stone-300 bg-stone-100 text-stone-700"
         : a.status === "NO_SHOW"
           ? "border border-red-200 bg-red-50 text-red-900"
-          : "border-s-2 border-brand-600 bg-nude/60 text-stone-900";
+          : "border-s-2 border-stone-900 bg-stone-100 text-stone-900";
   return (
     <Link
       href={`/dashboard/appointments/${a.id}`}
