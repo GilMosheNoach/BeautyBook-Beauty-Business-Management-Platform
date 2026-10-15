@@ -1,0 +1,159 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum BookingMode {
+  AUTO // online bookings are confirmed immediately
+  APPROVAL // online bookings wait for the owner to approve
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum AppointmentSource {
+  ONLINE
+  MANUAL
+  INVITE
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime  @default(now())
+  business     Business?
+}
+
+// The tenant. Every tenant-scoped row carries businessId.
+model Business {
+  id             String      @id @default(cuid())
+  ownerId        String      @unique
+  owner          User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  slug           String      @unique
+  name           String
+  about          String      @default("")
+  phone          String      @default("")
+  address        String      @default("")
+  instagram      String      @default("")
+  timezone       String      @default("Asia/Jerusalem")
+  bookingMode    BookingMode @default(APPROVAL)
+  slotStepMin    Int         @default(15)
+  minNoticeMin   Int         @default(120)
+  maxAdvanceDays Int         @default(60)
+  bufferMin      Int         @default(0)
+  onboarded      Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+
+  services     Service[]
+  workingHours WorkingHours[]
+  timeOff      TimeOff[]
+  clients      Client[]
+  appointments Appointment[]
+  invitations  Invitation[]
+}
+
+model Service {
+  id           String        @id @default(cuid())
+  businessId   String
+  business     Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name         String
+  description  String        @default("")
+  durationMin  Int
+  priceAgorot  Int
+  active       Boolean       @default(true)
+  sortOrder    Int           @default(0)
+  createdAt    DateTime      @default(now())
+  appointments Appointment[]
+  invitations  Invitation[]
+
+  @@index([businessId])
+}
+
+// Weekly recurring hours, in minutes from local midnight. Several ranges per
+// weekday are allowed (e.g. a lunch break splits the day in two).
+model WorkingHours {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  weekday    Int // 0 = Sunday … 6 = Saturday
+  startMin   Int
+  endMin     Int
+
+  @@index([businessId, weekday])
+}
+
+model TimeOff {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  startsAt   DateTime
+  endsAt     DateTime
+  reason     String   @default("")
+
+  @@index([businessId, startsAt])
+}
+
+model Client {
+  id           String        @id @default(cuid())
+  businessId   String
+  business     Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name         String
+  phone        String
+  email        String        @default("")
+  notes        String        @default("")
+  createdAt    DateTime      @default(now())
+  appointments Appointment[]
+
+  @@unique([businessId, phone])
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  businessId  String
+  business    Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  clientId    String
+  client      Client            @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  serviceId   String?
+  service     Service?          @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  serviceName String
+  priceAgorot Int
+  startsAt    DateTime
+  endsAt      DateTime
+  status      AppointmentStatus
+  source      AppointmentSource
+  note        String            @default("")
+  manageToken String            @unique
+  createdAt   DateTime          @default(now())
+
+  @@index([businessId, startsAt])
+  @@index([businessId, status])
+}
+
+model Invitation {
+  id          String    @id @default(cuid())
+  businessId  String
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  token       String    @unique
+  clientName  String    @default("")
+  clientPhone String    @default("")
+  serviceId   String?
+  service     Service?  @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  message     String    @default("")
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([businessId])
+}
