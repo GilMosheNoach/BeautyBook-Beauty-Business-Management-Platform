@@ -1,9 +1,9 @@
-import { appUrl } from "@/lib/url";
+import { businessUrl } from "@/lib/url";
 
 // One place that builds an invitation's link and the message sent with it, so
 // a resend from the list reads exactly like the first send.
 export function inviteLink(slug: string, token: string) {
-  return appUrl(`/b/${slug}?invite=${token}`);
+  return businessUrl(slug, `?invite=${token}`);
 }
 
 export function inviteText(opts: { link: string; businessName: string; clientName: string; serviceName?: string | null; message: string }) {

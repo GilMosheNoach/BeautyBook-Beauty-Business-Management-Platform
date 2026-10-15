@@ -7,7 +7,7 @@ import { requireBusiness } from "@/lib/session";
 import { formatPrice } from "@/lib/money";
 import { whatsappNumber } from "@/lib/phone";
 import { fmt, fmtTime } from "@/lib/time";
-import { appUrl } from "@/lib/url";
+import { businessUrl } from "@/lib/url";
 import { changeStatusAction } from "@/server/actions/appointments";
 import { StatusBadge } from "@/components/StatusBadge";
 import { CopyButton } from "@/components/CopyButton";
@@ -47,7 +47,7 @@ export default async function AppointmentPage({ params, searchParams }: { params
   const tz = business.timezone;
   const isPast = a.startsAt < new Date();
   const dateKey = fmt(a.startsAt, tz, "yyyy-MM-dd");
-  const manageUrl = appUrl(`/b/${business.slug}/a/${a.manageToken}`);
+  const manageUrl = businessUrl(business.slug, `/a/${a.manageToken}`);
   const confirmText = `היי ${a.client.name}, התור שלך ל${a.serviceName} ב${business.name} נקבע ל${fmt(a.startsAt, tz, "EEEE d.M")} בשעה ${fmtTime(a.startsAt, tz)}. פרטים וביטול: ${manageUrl}`;
 
   return (

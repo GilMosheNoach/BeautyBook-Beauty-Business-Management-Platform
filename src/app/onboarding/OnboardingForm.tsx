@@ -7,7 +7,7 @@ import { SubmitButton } from "@/components/SubmitButton";
 import { STARTER_SERVICES } from "@/lib/starterServices";
 import { normalizeSlug } from "@/lib/slug";
 
-export function OnboardingForm({ baseUrl }: { baseUrl: string }) {
+export function OnboardingForm({ prefix, suffix }: { prefix: string; suffix: string }) {
   const [state, action] = useActionState(createBusinessAction, undefined);
   const [slug, setSlug] = useState("");
   return (
@@ -21,7 +21,7 @@ export function OnboardingForm({ baseUrl }: { baseUrl: string }) {
         <div>
           <label className="label" htmlFor="slug">כתובת הדף שלך</label>
           <div className="flex items-stretch overflow-hidden rounded-xl border border-stone-300 bg-ivory focus-within:border-stone-900" dir="ltr">
-            <span className="flex items-center bg-stone-100 px-3 text-sm text-stone-500">{baseUrl}/b/</span>
+            {prefix && <span className="flex items-center bg-stone-100 px-3 text-sm text-stone-500">{prefix}</span>}
             <input
               className="min-w-0 flex-1 px-3 py-2.5 text-base outline-none sm:text-sm"
               id="slug"
@@ -31,6 +31,7 @@ export function OnboardingForm({ baseUrl }: { baseUrl: string }) {
               placeholder="michal-beauty"
               required
             />
+            {suffix && <span className="flex items-center bg-stone-100 px-3 text-sm text-stone-500">{suffix}</span>}
           </div>
           <p className="muted mt-1">באנגלית בלבד. זה הקישור שתשלחי ללקוחות.</p>
         </div>

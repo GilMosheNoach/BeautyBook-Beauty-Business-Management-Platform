@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { requireBusiness } from "@/lib/session";
 import { formatPrice } from "@/lib/money";
 import { addDaysToKey, fmt, fmtTime, isDateKey, localDateKey, localMinutesToDate, minutesToHHMM, weekdayOf } from "@/lib/time";
-import { appUrl } from "@/lib/url";
+import { businessUrl } from "@/lib/url";
 import { changeStatusAction } from "@/server/actions/appointments";
 import { CopyButton } from "@/components/CopyButton";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -62,7 +62,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
   const gridStart = Math.min(8 * 60, ...hours.map((h) => Math.floor(h.startMin / 60) * 60));
   const gridEnd = Math.max(20 * 60, ...hours.map((h) => Math.ceil(h.endMin / 60) * 60));
   const hourMarks = Array.from({ length: (gridEnd - gridStart) / 60 }, (_, i) => gridStart + i * 60);
-  const bookingUrl = appUrl(`/b/${business.slug}`);
+  const bookingUrl = businessUrl(business.slug);
   const step = view === "week" ? 7 : 1;
   const nav = (d: string) => `/dashboard?date=${d}&view=${view}`;
 

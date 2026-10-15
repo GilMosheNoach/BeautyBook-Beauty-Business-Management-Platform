@@ -2,7 +2,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireBusiness } from "@/lib/session";
 import { fmt } from "@/lib/time";
-import { appUrl } from "@/lib/url";
+import { businessUrl } from "@/lib/url";
 import { inviteLink, inviteText } from "@/lib/invite";
 import { whatsappNumber } from "@/lib/phone";
 import { CopyButton } from "@/components/CopyButton";
@@ -28,7 +28,7 @@ export default async function InvitePage({ searchParams }: { searchParams: Promi
     clientId ? db.client.findFirst({ where: { id: clientId, businessId: business.id } }) : null,
     db.invitation.findMany({ where: { businessId: business.id }, include: { service: true }, orderBy: { createdAt: "desc" }, take: 300 }),
   ]);
-  const bookingUrl = appUrl(`/b/${business.slug}`);
+  const bookingUrl = businessUrl(business.slug);
 
   const stateOf = (i: (typeof invitations)[number]): Exclude<Filter, "all"> => (i.usedAt ? "booked" : i.expiresAt < now ? "expired" : "pending");
   const counts = { all: invitations.length, pending: 0, booked: 0, expired: 0 };

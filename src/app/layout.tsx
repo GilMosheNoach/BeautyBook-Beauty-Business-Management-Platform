@@ -1,9 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { appUrl } from "@/lib/url";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(appUrl()),
   title: { default: "BeautyBook — ניהול תורים לקוסמטיקאיות", template: "%s · BeautyBook" },
   description: "דף הזמנת תורים אישי, יומן וניהול לקוחות לקוסמטיקאיות ובעלות עסקי יופי.",
+  applicationName: "BeautyBook",
+  openGraph: { type: "website", locale: "he_IL", siteName: "BeautyBook" },
+  // Set GOOGLE_SITE_VERIFICATION to the code Google Search Console gives you.
+  verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
 };
 
 export const viewport: Viewport = {

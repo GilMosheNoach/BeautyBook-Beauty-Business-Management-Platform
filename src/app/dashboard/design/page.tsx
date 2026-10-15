@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireBusiness } from "@/lib/session";
+import { businessUrl } from "@/lib/url";
 import { MAX_GALLERY_IMAGES, imageUrl, pageImages } from "@/server/images";
 import { deleteImageAction, moveImageAction } from "@/server/actions/images";
 import { ChevronLeftIcon, ChevronRightIcon, CloseIcon, ExternalIcon, ImageIcon } from "@/components/Icons";
@@ -25,9 +26,9 @@ export default async function DesignPage() {
           <h1 className="h1 mt-1">עיצוב הדף</h1>
           <p className="muted mt-1">התמונות והמילים שהלקוחות רואות כשהן נכנסות לקבוע תור.</p>
         </div>
-        <Link href={`/b/${business.slug}`} target="_blank" className="btn-secondary btn-sm">
+        <a href={businessUrl(business.slug)} target="_blank" className="btn-secondary btn-sm">
           צפייה בדף <ExternalIcon size={14} />
-        </Link>
+        </a>
       </div>
 
       <section className="card space-y-4">
