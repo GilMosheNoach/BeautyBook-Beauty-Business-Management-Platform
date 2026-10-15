@@ -9,6 +9,7 @@ import {
   addGalleryImage,
   deleteImage,
   moveGalleryImage,
+  setAboutImage,
   setCoverImage,
   setServiceImage,
 } from "@/server/images";
@@ -26,13 +27,14 @@ async function fileBytes(form: FormData) {
   return new Uint8Array(await file.arrayBuffer());
 }
 
-/** Uploads one photo: kind = cover | gallery | service (with serviceId). */
+/** Uploads one photo: kind = cover | about | gallery | service (with serviceId). */
 export async function uploadImageAction(form: FormData): Promise<FormState> {
   const business = await requireBusiness();
   try {
     const bytes = await fileBytes(form);
     const kind = String(form.get("kind") ?? "");
     if (kind === "cover") await setCoverImage(business.id, bytes);
+    else if (kind === "about") await setAboutImage(business.id, bytes);
     else if (kind === "gallery") await addGalleryImage(business.id, bytes);
     else if (kind === "service") await setServiceImage(business.id, String(form.get("serviceId") ?? ""), bytes);
     else return { error: "סוג תמונה לא תקין" };
@@ -60,6 +62,20 @@ const textsSchema = z.object({
   tagline: z.string().trim().max(120, "שורת הפתיחה ארוכה מדי"),
   about: z.string().trim().max(1000, "הטקסט ארוך מדי"),
 });
+
+const bioSchema = z.object({
+  bioTitle: z.string().trim().max(80, "הכותרת ארוכה מדי"),
+  bio: z.string().trim().max(2000, "הטקסט ארוך מדי"),
+});
+
+export async function updateBioAction(_: FormState, form: FormData): Promise<FormState> {
+  const business = await requireBusiness();
+  const parsed = bioSchema.safeParse({ bioTitle: form.get("bioTitle") ?? "", bio: form.get("bio") ?? "" });
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  await db.business.update({ where: { id: business.id }, data: parsed.data });
+  revalidate(business.slug);
+  return { ok: "נשמר" };
+}
 
 export async function updatePageTextsAction(_: FormState, form: FormData): Promise<FormState> {
   const business = await requireBusiness();

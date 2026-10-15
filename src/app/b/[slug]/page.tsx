@@ -173,6 +173,24 @@ export default async function BusinessPage({ params, searchParams }: Props) {
         )}
       </section>
 
+      {(business.bio || images.aboutId) && (
+        <section id="about" className="scroll-mt-6 bg-ivory">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 sm:grid-cols-2 sm:gap-16 sm:px-10 sm:py-28">
+            <div className={images.aboutId ? "" : "sm:col-span-2 sm:mx-auto sm:max-w-2xl sm:text-center"}>
+              <p className="eyebrow">קצת עליי</p>
+              <h2 className="mt-3 font-serif text-4xl font-light leading-tight sm:text-5xl">{business.bioTitle || business.name}</h2>
+              {business.bio && <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-stone-700 sm:text-lg">{business.bio}</p>}
+              <a href={bookHref()} className="btn-primary mt-9 px-8 py-3.5 tracking-[0.12em]">לקביעת תור</a>
+            </div>
+            {images.aboutId && (
+              <div className="relative order-first aspect-[4/5] overflow-hidden bg-sand sm:order-none">
+                <Image src={imageUrl(images.aboutId)} alt={business.bioTitle || business.name} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       <footer className="bg-stone-900 px-6 py-14 text-center text-ivory">
         <p className="font-serif text-2xl font-light">{business.name}</p>
         <div className="mt-5 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ivory/80">
