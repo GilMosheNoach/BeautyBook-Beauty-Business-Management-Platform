@@ -10,6 +10,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: appUrl("/"), changeFrequency: "weekly", priority: 1 },
     { url: appUrl("/beauticians"), changeFrequency: "daily", priority: 0.9 },
+    { url: appUrl("/terms"), changeFrequency: "yearly", priority: 0.2 },
+    { url: appUrl("/privacy"), changeFrequency: "yearly", priority: 0.2 },
     ...businesses.flatMap((b) => [
       { url: businessUrl(b.slug), changeFrequency: "weekly" as const, priority: 0.8 },
       { url: businessUrl(b.slug, "/book"), changeFrequency: "weekly" as const, priority: 0.6 },

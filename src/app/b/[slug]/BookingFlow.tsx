@@ -201,6 +201,10 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
               {pending ? "שולחת…" : requiresApproval ? "שליחת בקשה לתור" : "קביעת התור"}
             </button>
             {requiresApproval && <p className="muted text-center">התור יאושר סופית על ידי בעלת העסק.</p>}
+            <p className="text-center text-xs text-stone-500">
+              השם והטלפון יועברו לבעלת העסק לצורך התור בלבד. פרטים ב
+              <a href="/privacy" target="_blank" className="underline underline-offset-4">מדיניות הפרטיות</a>.
+            </p>
           </form>
         </section>
       )}

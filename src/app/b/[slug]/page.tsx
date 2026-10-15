@@ -8,6 +8,7 @@ import { imageUrl, pageImages } from "@/server/images";
 import { Wordmark } from "@/components/Logo";
 import { InstagramIcon, PhoneIcon, PinIcon } from "@/components/Icons";
 import { JsonLd } from "@/components/JsonLd";
+import { LegalLinks } from "@/components/LegalFooter";
 import { SITE_NAME, businessDescription, businessJsonLd } from "@/lib/seo";
 import { businessUrl } from "@/lib/url";
 import { businessPath } from "@/server/businessPath";
@@ -192,6 +193,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
         <p className="mt-3 text-xs">
           <Link href="/login" className="text-ivory/60 underline underline-offset-4 hover:text-ivory">כניסה לבעלת העסק</Link>
         </p>
+        <LegalLinks className="mt-4 text-ivory/60 [&_a:hover]:text-ivory" />
       </footer>
     </main>
   );

@@ -39,6 +39,9 @@ model User {
   passwordHash String
   name         String
   createdAt    DateTime  @default(now())
+  // When the owner ticked "I agree" at signup, and which version of the terms and privacy policy it was.
+  termsAcceptedAt DateTime?
+  termsVersion    String?
   business     Business?
 }
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { LegalLinks } from "@/components/LegalFooter";
 import { getCurrentUser } from "@/lib/session";
 import { JsonLd } from "@/components/JsonLd";
 import { appUrl, businessUrl } from "@/lib/url";
@@ -77,6 +78,7 @@ export default async function Home() {
       </main>
       <footer className="border-t border-stone-200 py-8 text-center text-sm text-stone-600">
         <Link href="/beauticians" className="hover:text-stone-900">קוסמטיקאיות · קביעת תור אונליין</Link>
+        <LegalLinks className="mt-4 text-stone-500" />
       </footer>
     </div>
   );
