@@ -13,7 +13,7 @@ Next.js 15 (App Router, Server Actions) · React 19 · TypeScript · Prisma 5 ·
 **דרישות:** Node.js 20 ומעלה, ו-Docker Desktop פועל (בשביל PostgreSQL).
 
 ```bash
-git clone https://github.com/AmnonHalili/BeautyBook.git
+git clone https://github.com/GilMosheNoach/BeautyBook-Beauty-Business-Management-Platform.git BeautyBook
 cd BeautyBook
 npm install
 npm run setup     # יוצר .env עם סוד אקראי, מרים Postgres ב-Docker, מריץ מיגרציות וטוען נתוני דמו
