@@ -18,7 +18,7 @@ async function shrink(file: File): Promise<Blob> {
 }
 
 type Props = {
-  kind: "cover" | "gallery" | "service";
+  kind: "cover" | "about" | "gallery" | "service";
   serviceId?: string;
   multiple?: boolean;
   className?: string;

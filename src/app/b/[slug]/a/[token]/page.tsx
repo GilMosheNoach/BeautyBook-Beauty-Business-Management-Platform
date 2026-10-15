@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LegalLinks } from "@/components/LegalFooter";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/money";
@@ -32,7 +33,7 @@ export default async function ManageAppointmentPage({ params, searchParams }: { 
       {isNew && (
         <div className="mb-6 text-center">
           <p className="eyebrow">{b.name}</p>
-          <h1 className="mt-3 font-serif text-4xl font-light">{appt.status === "PENDING" ? "הבקשה נשלחה!" : "התור נקבע!"}</h1>
+          <h1 className="mt-3 font-serif text-4xl font-extralight">{appt.status === "PENDING" ? "הבקשה נשלחה!" : "התור נקבע!"}</h1>
           <p className="mt-1 text-stone-600">
             {appt.status === "PENDING" ? `${b.name} תאשר את התור בהקדם.` : "מחכות לראות אותך."} שמרי את הדף הזה כדי לצפות בתור או לבטל אותו.
           </p>
@@ -42,12 +43,12 @@ export default async function ManageAppointmentPage({ params, searchParams }: { 
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="muted">{b.name}</p>
-            <h2 className="font-serif text-2xl">{appt.serviceName}</h2>
+            <h2 className="font-serif font-light text-2xl">{appt.serviceName}</h2>
           </div>
           <StatusBadge status={appt.status} />
         </div>
-        <p className="font-serif text-lg">{fmt(appt.startsAt, tz, "EEEE, d בMMMM")}</p>
-        <p className="font-serif text-2xl">{fmtTime(appt.startsAt, tz)}–{fmtTime(appt.endsAt, tz)}</p>
+        <p className="font-serif font-light text-lg">{fmt(appt.startsAt, tz, "EEEE, d בMMMM")}</p>
+        <p className="font-serif font-light text-2xl">{fmtTime(appt.startsAt, tz)}–{fmtTime(appt.endsAt, tz)}</p>
         <p className="muted">{formatPrice(appt.priceAgorot)} · על שם {appt.client.name}</p>
         {b.address && <p className="flex items-center gap-2 text-sm text-stone-600"><PinIcon size={16} />{b.address}</p>}
         <div className="flex flex-wrap gap-2 pt-2">
@@ -68,6 +69,7 @@ export default async function ManageAppointmentPage({ params, searchParams }: { 
       <p className="mt-6 text-center">
         <Link href={await businessPath(b.slug)} className="border-b border-current pb-0.5 text-sm tracking-wide text-stone-900">קביעת תור נוסף</Link>
       </p>
+      <LegalLinks className="mt-12 text-stone-500" />
     </main>
   );
 }

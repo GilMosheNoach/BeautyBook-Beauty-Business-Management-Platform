@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { TERMS_VERSION } from "@/lib/legal";
 import { hashPassword, verifyPassword } from "@/lib/password";
 import { getSession } from "@/lib/session";
 import { createSubscription } from "@/server/billing";
@@ -13,6 +14,7 @@ const signupSchema = z.object({
   email: z.string().trim().toLowerCase().email("כתובת אימייל לא תקינה"),
   password: z.string().min(8, "סיסמה של 8 תווים לפחות"),
   ref: z.string().max(32).optional(),
+  acceptTerms: z.literal("on", { message: "יש לאשר את תנאי השימוש ומדיניות הפרטיות" }),
 });
 
 export async function signupAction(_: FormState, form: FormData): Promise<FormState> {
@@ -23,7 +25,15 @@ export async function signupAction(_: FormState, form: FormData): Promise<FormSt
   const existing = await db.user.findUnique({ where: { email } });
   if (existing) return { error: "כבר קיים חשבון עם האימייל הזה. אפשר להתחבר." };
 
-  const user = await db.user.create({ data: { name, email, passwordHash: await hashPassword(password) } });
+  const user = await db.user.create({
+    data: {
+      name,
+      email,
+      passwordHash: await hashPassword(password),
+      termsAcceptedAt: new Date(),
+      termsVersion: TERMS_VERSION,
+    },
+  });
   await createSubscription(user.id, parsed.data.ref);
   const session = await getSession();
   session.userId = user.id;

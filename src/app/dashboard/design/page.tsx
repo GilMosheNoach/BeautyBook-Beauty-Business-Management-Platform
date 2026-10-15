@@ -7,6 +7,7 @@ import { MAX_GALLERY_IMAGES, imageUrl, pageImages } from "@/server/images";
 import { deleteImageAction, moveImageAction } from "@/server/actions/images";
 import { ChevronLeftIcon, ChevronRightIcon, CloseIcon, ExternalIcon, ImageIcon } from "@/components/Icons";
 import { ImageUpload } from "./ImageUpload";
+import { BioForm } from "./BioForm";
 import { PageTextsForm } from "./PageTextsForm";
 
 export const metadata = { title: "עיצוב הדף" };
@@ -78,7 +79,7 @@ export default async function DesignPage() {
                     {imageId && <Image src={imageUrl(imageId)} alt="" fill sizes="56px" className="object-cover" />}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-serif text-lg">{s.name}</p>
+                    <p className="truncate font-serif font-light text-lg">{s.name}</p>
                     {!s.active && <p className="muted">מוסתר מהדף</p>}
                   </div>
                   <div className="flex flex-wrap items-start justify-end gap-1">
@@ -126,6 +127,29 @@ export default async function DesignPage() {
             ))}
           </ul>
         )}
+      </section>
+
+      <section className="card space-y-4">
+        <div>
+          <h2 className="h2">עליי</h2>
+          <p className="muted mt-1">הסקשן האחרון בדף: תמונה שלך וכמה מילים עלייך. הוא מופיע בדף כשיש תמונה או טקסט.</p>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-[12rem_1fr]">
+          <div className="space-y-2">
+            <div className="relative aspect-[4/5] w-48 max-w-full overflow-hidden bg-sand">
+              {images.aboutId ? (
+                <Image src={imageUrl(images.aboutId)} alt="התמונה שלך" fill sizes="192px" className="object-cover" />
+              ) : (
+                <div className="grid h-full place-items-center text-stone-500"><ImageIcon size={28} /></div>
+              )}
+            </div>
+            <div className="flex flex-wrap items-start gap-1">
+              <ImageUpload kind="about" className="btn-primary btn-sm">{images.aboutId ? "החלפת תמונה" : "העלאת תמונה"}</ImageUpload>
+              {images.aboutId && <DeleteButton id={images.aboutId} label="הסרה" />}
+            </div>
+          </div>
+          <BioForm bioTitle={business.bioTitle} bio={business.bio} />
+        </div>
       </section>
     </div>
   );

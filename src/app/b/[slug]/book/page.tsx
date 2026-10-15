@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/money";
 import { ChevronRightIcon } from "@/components/Icons";
+import { LegalFooter } from "@/components/LegalFooter";
 import { businessUrl } from "@/lib/url";
 import { businessPath } from "@/server/businessPath";
 import { BookingFlow } from "../BookingFlow";
@@ -48,11 +49,11 @@ export default async function BookPage({ params, searchParams }: Props) {
           <Link href={back} className="inline-flex items-center gap-1 text-sm text-ivory/85 hover:text-ivory">
             <ChevronRightIcon size={16} /> חזרה
           </Link>
-          <Link href={back} className="truncate font-serif text-lg tracking-[0.2em]">{business.name}</Link>
+          <Link href={back} className="truncate font-serif font-light text-lg tracking-[0.2em]">{business.name}</Link>
         </nav>
         <div className="mx-auto max-w-xl px-6 pb-12 pt-8 text-center">
           <p className="text-xs tracking-[0.3em] text-ivory/70">קביעת תור</p>
-          <h1 className="mt-3 font-serif text-4xl font-light sm:text-5xl">בחרי טיפול ומועד</h1>
+          <h1 className="mt-3 font-serif text-4xl font-extralight sm:text-5xl">בחרי טיפול ומועד</h1>
           {invitation && (
             <p className="mt-4 text-sm text-ivory/80">{invitation.clientName ? `${invitation.clientName}, ` : ""}קיבלת הזמנה אישית</p>
           )}
@@ -69,6 +70,7 @@ export default async function BookPage({ params, searchParams }: Props) {
           invite={invitation ? { token: invitation.token, clientName: invitation.clientName, clientPhone: invitation.clientPhone } : null}
         />
       </section>
+      <LegalFooter />
     </main>
   );
 }
