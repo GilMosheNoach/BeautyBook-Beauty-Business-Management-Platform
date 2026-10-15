@@ -11,14 +11,14 @@
     "test": "vitest run",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "tsx --env-file=.env prisma/seed.ts",
     "setup:env": "node scripts/setup-env.mjs",
     "db:up": "docker compose up -d --wait postgres",
     "db:down": "docker compose down",
     "setup": "npm run setup:env && npm run db:up && prisma migrate deploy && npm run db:seed"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx --env-file=.env prisma/seed.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",
