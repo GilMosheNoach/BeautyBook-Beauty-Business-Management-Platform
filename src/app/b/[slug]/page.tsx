@@ -97,9 +97,8 @@ export default async function BusinessPage({ params, searchParams }: Props) {
         </div>
       </header>
 
-      {/* Intro panel rises over the hero, with a round monogram seal on its edge */}
-      <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-stone-50 px-6 pb-4 pt-20 text-center sm:pt-24">
-        <Seal name={business.name} initial={initial} />
+      {/* Intro panel rises over the hero */}
+      <section className="relative z-10 -mt-10 rounded-t-[2.5rem] bg-stone-50 px-6 pb-4 pt-14 text-center sm:pt-16">
         {invitation && (
           <div className="mx-auto mb-10 max-w-xl border border-stone-300 bg-ivory px-6 py-5">
             <p className="font-serif text-lg">{invitation.clientName ? `${invitation.clientName}, ` : ""}קיבלת הזמנה אישית</p>
@@ -217,27 +216,5 @@ function ServiceCard({ service: s, index, href, shape }: { service: ServiceCardD
         <p className="mt-4 inline-block border-b border-current pb-0.5 text-xs tracking-[0.2em]">לקביעת תור</p>
       </div>
     </a>
-  );
-}
-
-/** A round seal with the business name set around its rim, like a boutique stamp. */
-function Seal({ name, initial }: { name: string; initial: string }) {
-  // One rotated span per letter: SVG textPath mangles right-to-left text, this doesn't.
-  // Hebrew runs counter-clockwise so the top of the ring reads right to left.
-  const letters = Array.from(`${name} · קביעת תור אונליין · `);
-  const step = 360 / letters.length;
-  return (
-    <div className="absolute -top-14 end-6 h-28 w-28 rounded-full bg-stone-800 text-ivory shadow-xl sm:-top-[4.5rem] sm:end-16 sm:h-36 sm:w-36" aria-hidden>
-      {letters.map((ch, i) => (
-        <span
-          key={i}
-          className="absolute inset-0 flex justify-center pt-[7%] text-[8px] leading-none sm:text-[10px]"
-          style={{ transform: `rotate(${-i * step}deg)` }}
-        >
-          {ch}
-        </span>
-      ))}
-      <span className="absolute inset-[22%] grid place-items-center rounded-full border border-ivory/25 font-serif text-3xl font-light sm:text-4xl">{initial}</span>
-    </div>
   );
 }
