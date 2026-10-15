@@ -10,13 +10,36 @@ Next.js 15 (App Router, Server Actions) · React 19 · TypeScript · Prisma 5 ·
 
 ## הרצה מקומית
 
+**דרישות:** Node.js 20 ומעלה, ו-Docker Desktop פועל (בשביל PostgreSQL).
+
 ```bash
+git clone https://github.com/AmnonHalili/BeautyBook.git
+cd BeautyBook
 npm install
-cp .env.example .env          # מלאו DATABASE_URL ו-SESSION_SECRET (openssl rand -hex 32)
-npx prisma migrate deploy     # יוצר את הטבלאות ואת אילוץ מניעת כפל ההזמנות
-npm run db:seed               # עסק דמו: /b/demo, התחברות demo@beautybook.co.il / demo1234
-npm run dev                   # http://localhost:3000
+npm run setup     # יוצר .env עם סוד אקראי, מרים Postgres ב-Docker, מריץ מיגרציות וטוען נתוני דמו
+npm run dev       # http://localhost:3000
 ```
+
+אחרי זה:
+
+- **דף הזמנות לדוגמה:** http://localhost:3000/b/demo
+- **כניסה לדשבורד של הדמו:** http://localhost:3000/login עם `demo@beautybook.co.il` / `demo1234`
+- **עסק חדש משלך:** http://localhost:3000/signup
+
+`npm run setup` מריץ את השלבים האלה, ואפשר גם להריץ אותם אחד אחד:
+
+```bash
+npm run setup:env          # מעתיק את .env.example ל-.env ומייצר SESSION_SECRET
+npm run db:up              # docker compose up -d --wait postgres
+npx prisma migrate deploy  # טבלאות + אילוץ מניעת כפל הזמנות
+npm run db:seed            # עסק הדמו
+```
+
+**פורט 5432 תפוס?** (למשל כש-Postgres של BarberManager רץ) הוסיפו ל-.env את `POSTGRES_PORT=5433`, עדכנו את הפורט ב-`DATABASE_URL` לאותו מספר, והריצו `npm run setup` שוב.
+
+**בלי Docker?** אפשר להשתמש בכל PostgreSQL 14 ומעלה: צרו מסד בשם `beautybook`, עדכנו את `DATABASE_URL` ב-.env, ודלגו על `npm run db:up`.
+
+לעצירת מסד הנתונים: `npm run db:down` (הנתונים נשמרים ב-volume).
 
 ## בדיקות
 
@@ -24,7 +47,7 @@ npm run dev                   # http://localhost:3000
 npm run typecheck && npm run lint && npm test
 ```
 
-בדיקות האינטגרציה רצות מול מסד `beautybook_test` (או `TEST_DATABASE_URL`) ובודקות בידוד בין עסקים ומניעת כפל הזמנות במקביל.
+בדיקות האינטגרציה רצות מול מסד `beautybook_test`, שנוצר אוטומטית בקונטיינר של Docker (או מול `TEST_DATABASE_URL`), ובודקות בידוד בין עסקים ומניעת כפל הזמנות במקביל.
 
 ## מבנה
 
