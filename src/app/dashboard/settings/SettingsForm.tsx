@@ -6,7 +6,7 @@ import { updateSettingsAction } from "@/server/actions/business";
 import { FormMessage } from "@/components/FormMessage";
 import { SubmitButton } from "@/components/SubmitButton";
 
-export function SettingsForm({ business, baseUrl }: { business: Business; baseUrl: string }) {
+export function SettingsForm({ business, prefix, suffix }: { business: Business; prefix: string; suffix: string }) {
   const [state, action] = useActionState(updateSettingsAction, undefined);
   return (
     <form action={action} className="space-y-5">
@@ -20,8 +20,9 @@ export function SettingsForm({ business, baseUrl }: { business: Business; baseUr
           <div>
             <label className="label">כתובת הדף</label>
             <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-ivory" dir="ltr">
-              <span className="flex items-center bg-stone-100 px-2 text-xs text-stone-500">{baseUrl}/b/</span>
+              {prefix && <span className="flex items-center bg-stone-100 px-2 text-xs text-stone-500">{prefix}</span>}
               <input className="min-w-0 flex-1 px-3 py-2.5 text-base outline-none sm:text-sm" name="slug" defaultValue={business.slug} required />
+              {suffix && <span className="flex items-center bg-stone-100 px-2 text-xs text-stone-500">{suffix}</span>}
             </div>
           </div>
           <div>

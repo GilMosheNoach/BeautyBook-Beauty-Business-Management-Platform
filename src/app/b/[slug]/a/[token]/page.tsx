@@ -7,6 +7,7 @@ import { fmt, fmtTime } from "@/lib/time";
 import { cancelByClientAction } from "@/server/actions/publicBooking";
 import { StatusBadge } from "@/components/StatusBadge";
 import { PinIcon } from "@/components/Icons";
+import { businessPath } from "@/server/businessPath";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "התור שלי", robots: { index: false } };
@@ -65,7 +66,7 @@ export default async function ManageAppointmentPage({ params, searchParams }: { 
         )}
       </section>
       <p className="mt-6 text-center">
-        <Link href={`/b/${b.slug}`} className="border-b border-current pb-0.5 text-sm tracking-wide text-stone-900">קביעת תור נוסף</Link>
+        <Link href={await businessPath(b.slug)} className="border-b border-current pb-0.5 text-sm tracking-wide text-stone-900">קביעת תור נוסף</Link>
       </p>
     </main>
   );

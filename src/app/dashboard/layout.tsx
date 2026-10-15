@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { requireBusiness } from "@/lib/session";
+import { businessUrl } from "@/lib/url";
 import { logoutAction } from "@/server/actions/auth";
 import { ExternalIcon } from "@/components/Icons";
 import { BottomNav, TopNav } from "./NavLinks";
@@ -16,9 +16,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <TopNav />
           </div>
           <div className="flex items-center gap-2">
-            <Link href={`/b/${business.slug}`} target="_blank" className="btn-ghost btn-sm hidden sm:inline-flex">
+            <a href={businessUrl(business.slug)} target="_blank" className="btn-ghost btn-sm hidden sm:inline-flex">
               הדף שלי <ExternalIcon size={14} />
-            </Link>
+            </a>
             <form action={logoutAction}>
               <button className="btn-ghost btn-sm" type="submit">יציאה</button>
             </form>

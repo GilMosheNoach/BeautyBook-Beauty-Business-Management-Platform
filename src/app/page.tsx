@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { getCurrentUser } from "@/lib/session";
+import { JsonLd } from "@/components/JsonLd";
+import { appUrl, businessUrl } from "@/lib/url";
+
+export const metadata = { alternates: { canonical: "/" } };
 
 const FEATURES = [
   { title: "דף הזמנות אישי", text: "קישור משלך לשליחה ללקוחות, לביו באינסטגרם ולסטורי." },
@@ -15,6 +19,22 @@ export default async function Home() {
   const user = await getCurrentUser();
   return (
     <div className="min-h-dvh bg-stone-50">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            { "@type": "WebSite", name: "BeautyBook", url: appUrl("/"), inLanguage: "he-IL" },
+            {
+              "@type": "SoftwareApplication",
+              name: "BeautyBook",
+              url: appUrl("/"),
+              applicationCategory: "BusinessApplication",
+              operatingSystem: "Web",
+              description: "מערכת לניהול תורים לקוסמטיקאיות: דף הזמנות אישי, יומן וניהול לקוחות.",
+            },
+          ],
+        }}
+      />
       <header className="mx-auto flex max-w-5xl items-center justify-between border-b border-stone-200 px-4 py-5">
         <Logo />
         <nav className="flex gap-2">
@@ -41,7 +61,7 @@ export default async function Home() {
           </p>
           <div className="mt-8 flex justify-center gap-3">
             <Link href={user ? "/dashboard" : "/signup"} className="btn-primary px-7 py-3 text-base">מתחילות בחינם</Link>
-            <Link href="/b/demo" className="btn-secondary px-7 py-3 text-base">לדף לדוגמה</Link>
+            <a href={businessUrl("demo")} className="btn-secondary px-7 py-3 text-base">לדף לדוגמה</a>
           </div>
         </section>
         <section className="grid gap-px border border-stone-200 bg-stone-200 sm:grid-cols-2 lg:grid-cols-3">
@@ -55,6 +75,9 @@ export default async function Home() {
         </section>
         <div className="h-20" />
       </main>
+      <footer className="border-t border-stone-200 py-8 text-center text-sm text-stone-600">
+        <Link href="/beauticians" className="hover:text-stone-900">קוסמטיקאיות · קביעת תור אונליין</Link>
+      </footer>
     </div>
   );
 }

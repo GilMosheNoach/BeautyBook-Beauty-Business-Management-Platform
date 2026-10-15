@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/money";
 import { ChevronRightIcon } from "@/components/Icons";
+import { businessUrl } from "@/lib/url";
+import { businessPath } from "@/server/businessPath";
 import { BookingFlow } from "../BookingFlow";
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ invite?: string; service?: string }> };
@@ -12,8 +14,8 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const business = await db.business.findUnique({ where: { slug }, select: { name: true } });
-  return business ? { title: `קביעת תור · ${business.name}` } : {};
+  const business = await db.business.findUnique({ where: { slug }, select: { name: true, slug: true } });
+  return business ? { title: `קביעת תור · ${business.name}`, alternates: { canonical: businessUrl(business.slug, "/book") } } : {};
 }
 
 /** The booking steps on their own page, reached from a treatment card or a "book" button on the landing page. */
@@ -37,7 +39,7 @@ export default async function BookPage({ params, searchParams }: Props) {
     priceLabel: formatPrice(s.priceAgorot),
   }));
   const initialServiceId = services.find((s) => s.id === serviceParam)?.id ?? invitation?.serviceId ?? null;
-  const back = `/b/${business.slug}${invitation ? `?invite=${invitation.token}` : ""}`;
+  const back = `${await businessPath(business.slug)}${invitation ? `?invite=${invitation.token}` : ""}`;
 
   return (
     <main className="min-h-dvh bg-stone-50">

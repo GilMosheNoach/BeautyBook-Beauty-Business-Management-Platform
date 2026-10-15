@@ -6,6 +6,10 @@ import { formatPrice } from "@/lib/money";
 import { imageUrl, pageImages } from "@/server/images";
 import { Wordmark } from "@/components/Logo";
 import { InstagramIcon, PhoneIcon, PinIcon } from "@/components/Icons";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE_NAME, businessDescription, businessJsonLd } from "@/lib/seo";
+import { businessUrl } from "@/lib/url";
+import { businessPath } from "@/server/businessPath";
 import { Gallery } from "./Gallery";
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ invite?: string; service?: string }> };
@@ -14,13 +18,30 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const business = await db.business.findUnique({ where: { slug } });
+  const business = await db.business.findUnique({
+    where: { slug },
+    include: { services: { where: { active: true }, select: { name: true }, orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] } },
+  });
   if (!business) return {};
   const cover = await db.image.findFirst({ where: { businessId: business.id, kind: "COVER" }, select: { id: true } });
+  // Her name first, then what she is: people search for the name, or for "קוסמטיקאית" plus a place.
+  const title = `${business.name} · קוסמטיקאית · קביעת תור אונליין`;
+  const description = businessDescription(business, business.services.map((s) => s.name));
+  const url = businessUrl(business.slug);
   return {
-    title: `קביעת תור · ${business.name}`,
-    description: business.tagline || business.about || `קביעת תור אונליין ב${business.name}`,
-    openGraph: cover ? { images: [imageUrl(cover.id)] } : undefined,
+    title: { absolute: title },
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "website",
+      locale: "he_IL",
+      siteName: SITE_NAME,
+      url,
+      title: business.name,
+      description,
+      images: cover ? [imageUrl(cover.id)] : undefined,
+    },
+    twitter: { card: cover ? "summary_large_image" : "summary", title: business.name, description },
   };
 }
 
@@ -33,11 +54,12 @@ export default async function BusinessPage({ params, searchParams }: Props) {
   });
   if (!business) notFound();
 
-  const [invitation, images] = await Promise.all([
+  const [invitation, images, hours] = await Promise.all([
     inviteToken
       ? db.invitation.findFirst({ where: { token: inviteToken, businessId: business.id, usedAt: null, expiresAt: { gt: new Date() } } })
       : null,
     pageImages(business.id),
+    db.workingHours.findMany({ where: { businessId: business.id }, orderBy: [{ weekday: "asc" }, { startMin: "asc" }] }),
   ]);
   const services = business.services.map((s) => ({
     id: s.id,
@@ -48,13 +70,14 @@ export default async function BusinessPage({ params, searchParams }: Props) {
     imageId: images.byService.get(s.id) ?? null,
   }));
   // Booking lives on its own page; a valid invitation rides along so the client's details are filled in there.
+  const bookBase = await businessPath(business.slug, "/book");
   const bookHref = (serviceId?: string) => {
     const q = new URLSearchParams();
     if (serviceId) q.set("service", serviceId);
     else if (serviceParam) q.set("service", serviceParam);
     if (invitation) q.set("invite", invitation.token);
     const qs = q.toString();
-    return `/b/${business.slug}/book${qs ? `?${qs}` : ""}`;
+    return `${bookBase}${qs ? `?${qs}` : ""}`;
   };
   const instagram = business.instagram.replace(/^@/, "");
 
@@ -62,6 +85,14 @@ export default async function BusinessPage({ params, searchParams }: Props) {
 
   return (
     <main className="min-h-dvh bg-stone-50">
+      <JsonLd
+        data={businessJsonLd(
+          business,
+          business.services,
+          hours,
+          [images.coverId, ...images.gallery.slice(0, 5)].filter((id): id is string => Boolean(id)).map(imageUrl),
+        )}
+      />
       {/* Hero: the owner's cover photo full-bleed, or an espresso field with her monogram until she uploads one */}
       <header className="relative flex h-[calc(100svh+2.5rem)] min-h-[600px] flex-col overflow-hidden bg-stone-900 text-ivory">
         {images.coverId ? (

@@ -74,6 +74,15 @@ npm run typecheck && npm run lint && npm test
 
 התמונות נשמרות במסד הנתונים (טבלת `Image`), כך שאין צורך באחסון קבצים נפרד. הדפדפן מקטין כל תמונה ל-2000 פיקסלים לפני ההעלאה, השרת מקבל רק JPG/PNG/WEBP עד 4MB ובודק את סוג הקובץ לפי התוכן שלו. כל תמונה היא שורה שלא משתנה (החלפה יוצרת מזהה חדש), ולכן `/img/<id>` נשמר במטמון לתמיד. אם נפח התמונות יגדל מאוד, אפשר להעביר אותן לאחסון אובייקטים (S3 / R2) בלי לשנות את הדפים.
 
+## כתובת לכל עסק ו-SEO
+
+כל עסק מקבל כתובת משלו: `michal.beautybook.co.il`. ה-middleware (`src/middleware.ts`) מזהה את תת-הדומיין ומציג את דף העסק, ו-`/a/<token>` שם מציג את דף התור של הלקוחה. `/b/<slug>` ממשיך לעבוד, וכשמוגדר דומיין הוא מפנה (308) לתת-הדומיין כדי שלגוגל תהיה כתובת אחת לכל עסק.
+
+- **הפעלה:** `NEXT_PUBLIC_ROOT_DOMAIN="beautybook.co.il"` ורשומת DNS כללית `*.beautybook.co.il` שמצביעה על השרת (ב-Vercel: להוסיף את הדומיין ואת `*.beautybook.co.il` לפרויקט). בלי המשתנה הקישורים נשארים `/b/<slug>`.
+- **בדיקה מקומית:** `http://demo.localhost:3006` עובד גם בלי הגדרה (דפדפנים מפנים כל `*.localhost` למחשב עצמו).
+- **מה גוגל מקבל:** כותרת ותיאור לכל עסק (שם + "קוסמטיקאית" + עיר), `canonical`, Open Graph, נתונים מובנים `BeautySalon` (כתובת, טלפון, שעות, טיפולים ומחירים), `sitemap.xml` עם כל העסקים, `robots.txt` שמסתיר את הדשבורד ודפי התורים, ודף `/beauticians` שמרכז את כל העסקים.
+- **אחרי העלאה לאוויר:** לאמת את הדומיין ב-Google Search Console כ-Domain property (כך הוא מכסה את כל תתי-הדומיינים), לשים את קוד האימות ב-`GOOGLE_SITE_VERIFICATION`, ולהגיש את `https://beautybook.co.il/sitemap.xml`.
+
 ## פריסה
 
 מתאים ל-Vercel + Postgres מנוהל (Neon / Supabase). הגדירו `DATABASE_URL`, `SESSION_SECRET`, `NEXT_PUBLIC_APP_URL`, והריצו `npx prisma migrate deploy` לפני העלאה. ה-rate limit להזמנות ציבוריות הוא בזיכרון; כשיש כמה מופעים כדאי להעביר אותו ל-Redis/Upstash.
