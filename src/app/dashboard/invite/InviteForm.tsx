@@ -57,7 +57,7 @@ export function InviteForm({ services, defaults }: Props) {
       </div>
       <div>
         <label className="label">הודעה אישית (לא חובה)</label>
-        <textarea className="input" name="message" rows={2} placeholder="לדוגמה: הגיע הזמן לטיפול הפנים הבא שלך 🌸" />
+        <textarea className="input" name="message" rows={2} placeholder="לדוגמה: הגיע הזמן לטיפול הפנים הבא שלך" />
       </div>
       <div>
         <label className="label">תוקף ההזמנה</label>

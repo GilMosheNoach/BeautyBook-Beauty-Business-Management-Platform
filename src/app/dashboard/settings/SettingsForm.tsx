@@ -19,7 +19,7 @@ export function SettingsForm({ business, baseUrl }: { business: Business; baseUr
           </div>
           <div>
             <label className="label">כתובת הדף</label>
-            <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-white" dir="ltr">
+            <div className="flex overflow-hidden rounded-xl border border-stone-300 bg-ivory" dir="ltr">
               <span className="flex items-center bg-stone-100 px-2 text-xs text-stone-500">{baseUrl}/b/</span>
               <input className="min-w-0 flex-1 px-3 py-2.5 text-base outline-none sm:text-sm" name="slug" defaultValue={business.slug} required />
             </div>
@@ -37,21 +37,17 @@ export function SettingsForm({ business, baseUrl }: { business: Business; baseUr
             <input className="input" name="instagram" dir="ltr" defaultValue={business.instagram} placeholder="username" />
           </div>
         </div>
-        <div>
-          <label className="label">כמה מילים על העסק</label>
-          <textarea className="input" name="about" rows={3} defaultValue={business.about} placeholder="מופיע בראש דף ההזמנות" />
-        </div>
       </section>
 
       <section className="card space-y-4">
         <h2 className="h2">כללי הזמנה</h2>
         <fieldset className="space-y-2">
           <legend className="label">תורים חדשים מהדף</legend>
-          <label className="flex items-start gap-3 rounded-xl border border-stone-200 p-3 has-[:checked]:border-brand-400 has-[:checked]:bg-brand-50">
+          <label className="flex items-start gap-3 rounded-xl border border-stone-200 p-3 has-[:checked]:border-stone-900 has-[:checked]:bg-stone-50">
             <input type="radio" name="bookingMode" value="APPROVAL" defaultChecked={business.bookingMode === "APPROVAL"} className="mt-1 accent-brand-600" />
             <span><span className="font-medium">דורשים את האישור שלי</span><br /><span className="muted">הלקוחה שולחת בקשה, ואת מאשרת או דוחה ביומן.</span></span>
           </label>
-          <label className="flex items-start gap-3 rounded-xl border border-stone-200 p-3 has-[:checked]:border-brand-400 has-[:checked]:bg-brand-50">
+          <label className="flex items-start gap-3 rounded-xl border border-stone-200 p-3 has-[:checked]:border-stone-900 has-[:checked]:bg-stone-50">
             <input type="radio" name="bookingMode" value="AUTO" defaultChecked={business.bookingMode === "AUTO"} className="mt-1 accent-brand-600" />
             <span><span className="font-medium">מאושרים אוטומטית</span><br /><span className="muted">התור נכנס ליומן מיד.</span></span>
           </label>

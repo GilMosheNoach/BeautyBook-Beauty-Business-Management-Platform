@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NoteIcon, PhoneIcon } from "@/components/Icons";
 import { notFound } from "next/navigation";
 import type { AppointmentStatus } from "@prisma/client";
 import { db } from "@/lib/db";
@@ -66,7 +67,7 @@ export default async function AppointmentPage({ params, searchParams }: { params
           <div><dt className="muted">מחיר</dt><dd className="font-medium">{formatPrice(a.priceAgorot)}</dd></div>
           <div><dt className="muted">מקור</dt><dd className="font-medium">{SOURCE_LABEL[a.source]}</dd></div>
         </dl>
-        {a.note && <p className="rounded-xl bg-stone-50 p-3 text-sm">💬 {a.note}</p>}
+        {a.note && <p className="flex gap-2 rounded-xl bg-stone-50 p-3 text-sm"><NoteIcon size={18} className="shrink-0 text-stone-500" />{a.note}</p>}
         <div className="flex flex-wrap gap-2">
           {actionsFor(a.status, isPast).map((act) => (
             <form key={act.status} action={changeStatusAction}>
@@ -81,11 +82,11 @@ export default async function AppointmentPage({ params, searchParams }: { params
       <section className="card space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="h2">{a.client.name}</h2>
-          <Link className="text-sm font-medium text-brand-700" href={`/dashboard/clients/${a.client.id}`}>כרטיס לקוחה</Link>
+          <Link className="text-sm font-medium text-brand-600 underline underline-offset-4" href={`/dashboard/clients/${a.client.id}`}>כרטיס לקוחה</Link>
         </div>
         <p dir="ltr" className="text-end text-stone-700">{a.client.phone}</p>
         <div className="flex flex-wrap gap-2">
-          <a className="btn-secondary" href={`tel:${a.client.phone}`}>📞 התקשרות</a>
+          <a className="btn-secondary" href={`tel:${a.client.phone}`}><PhoneIcon size={16} /> התקשרות</a>
           <a className="btn-secondary" target="_blank" rel="noreferrer" href={`https://wa.me/${whatsappNumber(a.client.phone)}?text=${encodeURIComponent(confirmText)}`}>
             שליחת אישור בוואטסאפ
           </a>

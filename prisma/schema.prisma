@@ -21,6 +21,12 @@ enum AppointmentStatus {
   NO_SHOW
 }
 
+enum ImageKind {
+  COVER // the large photo at the top of the public page (one per business)
+  GALLERY
+  SERVICE // one photo per service, shown on its tile
+}
+
 enum AppointmentSource {
   ONLINE
   MANUAL
@@ -43,6 +49,7 @@ model Business {
   owner          User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   slug           String      @unique
   name           String
+  tagline        String      @default("")
   about          String      @default("")
   phone          String      @default("")
   address        String      @default("")
@@ -62,6 +69,7 @@ model Business {
   clients      Client[]
   appointments Appointment[]
   invitations  Invitation[]
+  images       Image[]
 }
 
 model Service {
@@ -77,8 +85,28 @@ model Service {
   createdAt    DateTime      @default(now())
   appointments Appointment[]
   invitations  Invitation[]
+  image        Image?
 
   @@index([businessId])
+}
+
+// Photos the owner uploads for the public page. Bytes live in the database so
+// the app needs no separate file storage; each row is immutable (replacing a
+// photo creates a new id), so /img/<id> can be cached forever.
+model Image {
+  id         String    @id @default(cuid())
+  businessId String
+  business   Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  kind       ImageKind
+  serviceId  String?   @unique
+  service    Service?  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  mime       String
+  data       Bytes
+  sizeBytes  Int
+  sortOrder  Int       @default(0)
+  createdAt  DateTime  @default(now())
+
+  @@index([businessId, kind, sortOrder])
 }
 
 // Weekly recurring hours, in minutes from local midnight. Several ranges per

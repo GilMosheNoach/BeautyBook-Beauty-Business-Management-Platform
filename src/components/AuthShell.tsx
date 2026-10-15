@@ -2,13 +2,15 @@ import { Logo } from "./Logo";
 
 export function AuthShell({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col px-4 py-8">
-      <Logo />
-      <div className="mt-10">
-        <h1 className="h1">{title}</h1>
-        {subtitle && <p className="muted mt-1">{subtitle}</p>}
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col px-4 py-10">
+      <div className="flex justify-center">
+        <Logo />
       </div>
-      <div className="mt-6">{children}</div>
+      <div className="mt-14 text-center">
+        <h1 className="font-serif text-4xl font-light">{title}</h1>
+        {subtitle && <p className="muted mt-2">{subtitle}</p>}
+      </div>
+      <div className="card mt-8">{children}</div>
     </main>
   );
 }

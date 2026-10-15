@@ -12,7 +12,7 @@ export default async function SignupPage() {
     <AuthShell title="פותחים עסק ב-BeautyBook" subtitle="חינם, בלי כרטיס אשראי. תוך דקה יש לך דף הזמנות משלך.">
       <SignupForm />
       <p className="muted mt-6 text-center">
-        כבר יש לך חשבון? <Link className="font-medium text-brand-700" href="/login">התחברות</Link>
+        כבר יש לך חשבון? <Link className="font-medium text-brand-600 underline underline-offset-4" href="/login">התחברות</Link>
       </p>
     </AuthShell>
   );
