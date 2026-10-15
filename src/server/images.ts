@@ -22,14 +22,17 @@ function validate(bytes: Uint8Array) {
   return { mime, data: Buffer.from(bytes), sizeBytes: bytes.length };
 }
 
-/** Replaces the business's cover photo. */
-export async function setCoverImage(businessId: string, bytes: Uint8Array) {
+/** Replaces a photo the business has only one of: the cover or the owner's portrait. */
+async function setSingleImage(businessId: string, kind: "COVER" | "ABOUT", bytes: Uint8Array) {
   const file = validate(bytes);
   return db.$transaction(async (tx) => {
-    await tx.image.deleteMany({ where: { businessId, kind: "COVER" } });
-    return tx.image.create({ data: { businessId, kind: "COVER", ...file }, select: { id: true } });
+    await tx.image.deleteMany({ where: { businessId, kind } });
+    return tx.image.create({ data: { businessId, kind, ...file }, select: { id: true } });
   });
 }
+
+export const setCoverImage = (businessId: string, bytes: Uint8Array) => setSingleImage(businessId, "COVER", bytes);
+export const setAboutImage = (businessId: string, bytes: Uint8Array) => setSingleImage(businessId, "ABOUT", bytes);
 
 export async function addGalleryImage(businessId: string, bytes: Uint8Array) {
   const file = validate(bytes);
@@ -80,6 +83,7 @@ export async function pageImages(businessId: string) {
   });
   return {
     coverId: rows.find((r) => r.kind === "COVER")?.id ?? null,
+    aboutId: rows.find((r) => r.kind === "ABOUT")?.id ?? null,
     gallery: rows.filter((r) => r.kind === "GALLERY").map((r) => r.id),
     byService: new Map(rows.filter((r) => r.serviceId).map((r) => [r.serviceId!, r.id])),
   };

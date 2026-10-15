@@ -1,0 +1,6 @@
+-- AlterEnum
+ALTER TYPE "ImageKind" ADD VALUE 'ABOUT';
+
+-- AlterTable
+ALTER TABLE "Business" ADD COLUMN "bioTitle" TEXT NOT NULL DEFAULT '',
+ADD COLUMN "bio" TEXT NOT NULL DEFAULT '';

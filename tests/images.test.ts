@@ -5,7 +5,7 @@ const TEST_DB = process.env.TEST_DATABASE_URL || "postgresql://postgres:postgres
 process.env.DATABASE_URL = TEST_DB;
 
 const { db } = await import("@/lib/db");
-const { ImageError, addGalleryImage, deleteImage, moveGalleryImage, pageImages, setCoverImage, setServiceImage, sniffImageType } = await import("@/server/images");
+const { ImageError, addGalleryImage, setAboutImage, deleteImage, moveGalleryImage, pageImages, setCoverImage, setServiceImage, sniffImageType } = await import("@/server/images");
 
 // Smallest valid-looking headers for each accepted type.
 const JPEG = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]);
@@ -55,6 +55,15 @@ describe("page photos", () => {
     const covers = await db.image.findMany({ where: { businessId: a.id, kind: "COVER" } });
     expect(covers.map((c) => c.id)).toEqual([second.id]);
     expect(covers[0].mime).toBe("image/png");
+  });
+
+  it("keeps a single portrait per business, apart from the cover", async () => {
+    await setAboutImage(a.id, JPEG);
+    const second = await setAboutImage(a.id, WEBP);
+    const portraits = await db.image.findMany({ where: { businessId: a.id, kind: "ABOUT" } });
+    expect(portraits.map((p) => p.id)).toEqual([second.id]);
+    expect((await pageImages(a.id)).aboutId).toBe(second.id);
+    expect((await pageImages(a.id)).coverId).not.toBe(second.id);
   });
 
   it("will not attach a photo to another business's service", async () => {

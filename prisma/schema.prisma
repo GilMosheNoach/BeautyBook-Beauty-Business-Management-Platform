@@ -25,6 +25,7 @@ enum ImageKind {
   COVER // the large photo at the top of the public page (one per business)
   GALLERY
   SERVICE // one photo per service, shown on its tile
+  ABOUT // the owner's portrait in the page's "about" section (one per business)
 }
 
 enum AppointmentSource {
@@ -53,6 +54,8 @@ model Business {
   slug           String      @unique
   name           String
   tagline        String      @default("")
+  bioTitle       String      @default("")
+  bio            String      @default("")
   about          String      @default("")
   phone          String      @default("")
   address        String      @default("")
