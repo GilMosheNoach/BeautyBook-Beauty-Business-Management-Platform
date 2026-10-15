@@ -104,11 +104,11 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
               className={`flex w-full items-center justify-between gap-3 border-b border-stone-200 px-4 py-5 text-start transition ${s.id === serviceId ? "bg-stone-50 shadow-[inset_-2px_0_0_theme(colors.brand.600)]" : "hover:bg-stone-50"}`}
             >
               <span className="min-w-0">
-                <span className="block font-serif text-lg">{s.name}</span>
+                <span className="block font-serif font-light text-lg">{s.name}</span>
                 {s.description && <span className="mt-0.5 block text-sm text-stone-500">{s.description}</span>}
                 <span className="mt-1 block text-xs tracking-wide text-stone-500">{s.durationMin} דקות</span>
               </span>
-              <span className="shrink-0 font-serif text-lg">{s.priceLabel}</span>
+              <span className="shrink-0 font-serif font-light text-lg">{s.priceLabel}</span>
             </button>
           ))}
         </div>
@@ -138,7 +138,7 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
                       className={`flex w-14 shrink-0 flex-col items-center border py-2.5 text-sm transition disabled:opacity-35 ${d.date === date ? "border-stone-900 bg-stone-900 text-ivory" : "border-stone-300 bg-ivory hover:border-stone-900"}`}
                     >
                       <span className="text-xs">{dayFmt.format(dt)}</span>
-                      <span className="font-serif text-xl">{dt.getUTCDate()}</span>
+                      <span className="font-serif font-light text-xl">{dt.getUTCDate()}</span>
                       <span className="text-[10px] opacity-70">{dt.getUTCMonth() + 1}/{String(dt.getUTCFullYear()).slice(2)}</span>
                     </button>
                   );
@@ -217,7 +217,7 @@ function StepTitle({ n, children }: { n: string; children: React.ReactNode }) {
   return (
     <h3 className="mb-5 flex items-baseline gap-3">
       <span className="font-display text-2xl lining-nums text-brand-600">{n}</span>
-      <span className="font-serif text-2xl font-light">{children}</span>
+      <span className="font-serif text-2xl font-extralight">{children}</span>
     </h3>
   );
 }

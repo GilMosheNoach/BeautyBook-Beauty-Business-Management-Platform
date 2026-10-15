@@ -8,7 +8,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
         <Logo />
       </div>
       <div className="mt-14 text-center">
-        <h1 className="font-serif text-4xl font-light">{title}</h1>
+        <h1 className="font-serif text-4xl font-extralight">{title}</h1>
         {subtitle && <p className="muted mt-2">{subtitle}</p>}
       </div>
       <div className="card mt-8">{children}</div>

@@ -10,7 +10,7 @@ export function LegalDoc({ title, updated, children }: { title: string; updated:
       </header>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-12">
         <p className="eyebrow">מידע משפטי</p>
-        <h1 className="mt-3 font-serif text-4xl font-light sm:text-5xl">{title}</h1>
+        <h1 className="mt-3 font-serif text-4xl font-extralight sm:text-5xl">{title}</h1>
         <p className="muted mt-3">עודכן לאחרונה: {updated}</p>
         <div className="mt-10 space-y-10 text-[15px] leading-relaxed text-stone-800">{children}</div>
       </main>
@@ -22,7 +22,7 @@ export function LegalDoc({ title, updated, children }: { title: string; updated:
 export function Section({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
     <section id={`s${n}`} className="scroll-mt-6">
-      <h2 className="flex items-baseline gap-3 font-serif text-2xl font-light">
+      <h2 className="flex items-baseline gap-3 font-serif text-2xl font-extralight">
         <span className="font-display text-xl lining-nums text-stone-400">{String(n).padStart(2, "0")}</span>
         {title}
       </h2>

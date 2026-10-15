@@ -4,7 +4,7 @@
 
 :root {
   --font-sans: "Assistant";
-  --font-serif: "Frank Ruhl Libre";
+  --font-serif: "Heebo";
   --font-display: "Cormorant Garamond";
 }
 
@@ -49,10 +49,10 @@ body {
     @apply inline-flex items-center rounded-xl px-2 py-0.5 text-xs font-medium tracking-wide;
   }
   .h1 {
-    @apply font-serif text-3xl font-light tracking-tight text-stone-900;
+    @apply font-serif text-3xl font-extralight tracking-tight text-stone-900;
   }
   .h2 {
-    @apply font-serif text-xl font-normal text-stone-900;
+    @apply font-serif text-xl font-light text-stone-900;
   }
   .eyebrow {
     @apply text-xs tracking-[0.25em] text-stone-500;

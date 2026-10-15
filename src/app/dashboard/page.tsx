@@ -71,7 +71,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
       {(sp.welcome || serviceCount === 0) && (
         <section className="card border-stone-900 bg-ivory">
           <p className="eyebrow">ברוכה הבאה</p>
-          <h2 className="mt-1 font-serif text-2xl font-light">העסק שלך באוויר</h2>
+          <h2 className="mt-1 font-serif text-2xl font-extralight">העסק שלך באוויר</h2>
           <p className="mt-1 text-sm text-stone-700">
             זה הקישור שלך להזמנת תורים. שלחי אותו ללקוחות או שימי אותו בביו של האינסטגרם.
           </p>
@@ -120,7 +120,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
           <Link href={nav(addDaysToKey(date, -step))} className="btn-ghost btn-sm border border-stone-300 px-2" aria-label="הקודם"><ChevronRightIcon size={16} /></Link>
           <Link href={nav(today)} className="btn-ghost btn-sm border border-stone-300">היום</Link>
           <Link href={nav(addDaysToKey(date, step))} className="btn-ghost btn-sm border border-stone-300 px-2" aria-label="הבא"><ChevronLeftIcon size={16} /></Link>
-          <h1 className="ms-3 font-serif text-2xl font-light">
+          <h1 className="ms-3 font-serif text-2xl font-extralight">
             {view === "day"
               ? fmt(localMinutesToDate(date, 12 * 60, tz), tz, "EEEE, d בMMMM")
               : `${fmt(localMinutesToDate(days[0], 720, tz), tz, "d.M")} – ${fmt(localMinutesToDate(days[6], 720, tz), tz, "d.M.yyyy")}`}
