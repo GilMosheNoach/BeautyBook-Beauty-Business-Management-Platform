@@ -3,7 +3,7 @@ import Link from "next/link";
 export function Wordmark({ className = "" }: { className?: string }) {
   return (
     <span dir="ltr" className={`font-display font-medium leading-none tracking-tight ${className}`}>
-      Beauty<span className="italic text-brand-600">Book</span>
+      Beauty<span className="italic">Book</span>
     </span>
   );
 }

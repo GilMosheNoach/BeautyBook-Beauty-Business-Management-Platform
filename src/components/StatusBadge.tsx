@@ -10,7 +10,7 @@ export const STATUS_LABEL: Record<AppointmentStatus, string> = {
 };
 
 const STATUS_CLASS: Record<AppointmentStatus, string> = {
-  PENDING: "border border-[#b08a57] text-[#7a5a2e]",
+  PENDING: "border border-dashed border-stone-500 text-stone-700",
   CONFIRMED: "bg-stone-900 text-ivory",
   REJECTED: "border border-stone-300 text-stone-500",
   CANCELLED: "border border-stone-300 text-stone-500",

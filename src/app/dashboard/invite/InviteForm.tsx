@@ -22,7 +22,7 @@ export function InviteForm({ services, defaults }: Props) {
     const wa = state.phone ? `https://wa.me/${waNumber(state.phone)}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`;
     return (
       <div className="space-y-4">
-        <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">ההזמנה מוכנה! שלחי אותה ללקוחה:</p>
+        <p className="rounded-xl bg-stone-100 px-3 py-2 text-sm text-stone-900">ההזמנה מוכנה! שלחי אותה ללקוחה:</p>
         <pre className="whitespace-pre-wrap break-all rounded-xl bg-stone-50 p-3 font-sans text-sm">{text}</pre>
         <div className="flex flex-wrap gap-2">
           <a className="btn-primary" href={wa} target="_blank" rel="noreferrer">שליחה בוואטסאפ</a>

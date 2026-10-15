@@ -53,7 +53,7 @@ export default async function AppointmentPage({ params, searchParams }: { params
   return (
     <div className="mx-auto max-w-xl space-y-4">
       <Link href={`/dashboard?date=${dateKey}`} className="muted">→ חזרה ליומן</Link>
-      {created && <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">התור נקבע ✓</p>}
+      {created && <p className="rounded-xl bg-stone-100 px-3 py-2 text-sm text-stone-900">התור נקבע ✓</p>}
       <section className="card space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div>

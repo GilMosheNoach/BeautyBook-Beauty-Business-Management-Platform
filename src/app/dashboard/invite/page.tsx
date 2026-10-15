@@ -51,7 +51,7 @@ export default async function InvitePage({ searchParams }: { searchParams: Promi
                     <p className="font-medium">{i.clientName || "ללא שם"}{i.service ? ` · ${i.service.name}` : ""}</p>
                     <p className="muted">{fmt(i.createdAt, business.timezone, "d.M HH:mm")}</p>
                   </div>
-                  <span className={`badge ${i.usedAt ? "bg-emerald-100 text-emerald-800" : i.expiresAt < now ? "bg-stone-200 text-stone-600" : "bg-sky-100 text-sky-800"}`}>
+                  <span className={`badge ${i.usedAt ? "bg-stone-900 text-ivory" : i.expiresAt < now ? "bg-stone-200 text-stone-600" : "border border-stone-900 text-stone-900"}`}>
                     {i.usedAt ? "נקבע תור" : i.expiresAt < now ? "פג תוקף" : "נשלחה"}
                   </span>
                 </li>
