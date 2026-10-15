@@ -16,6 +16,7 @@ import type { FormState } from "@/components/FormMessage";
 
 function revalidate(slug: string) {
   revalidatePath("/dashboard/design");
+  revalidatePath("/dashboard/services");
   revalidatePath(`/b/${slug}`);
 }
 
