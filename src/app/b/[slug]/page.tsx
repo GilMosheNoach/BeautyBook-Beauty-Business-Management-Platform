@@ -6,7 +6,6 @@ import { formatPrice } from "@/lib/money";
 import { imageUrl, pageImages } from "@/server/images";
 import { Wordmark } from "@/components/Logo";
 import { InstagramIcon, PhoneIcon, PinIcon } from "@/components/Icons";
-import { BookingFlow } from "./BookingFlow";
 import { Gallery } from "./Gallery";
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ invite?: string; service?: string }> };
@@ -48,7 +47,15 @@ export default async function BusinessPage({ params, searchParams }: Props) {
     priceLabel: formatPrice(s.priceAgorot),
     imageId: images.byService.get(s.id) ?? null,
   }));
-  const initialServiceId = invitation?.serviceId ?? services.find((s) => s.id === serviceParam)?.id ?? null;
+  // Booking lives on its own page; a valid invitation rides along so the client's details are filled in there.
+  const bookHref = (serviceId?: string) => {
+    const q = new URLSearchParams();
+    if (serviceId) q.set("service", serviceId);
+    else if (serviceParam) q.set("service", serviceParam);
+    if (invitation) q.set("invite", invitation.token);
+    const qs = q.toString();
+    return `/b/${business.slug}/book${qs ? `?${qs}` : ""}`;
+  };
   const instagram = business.instagram.replace(/^@/, "");
 
   const initial = business.name.trim().slice(0, 1);
@@ -72,8 +79,8 @@ export default async function BusinessPage({ params, searchParams }: Props) {
           <a href="#top" className="truncate font-serif text-lg tracking-[0.2em]">{business.name}</a>
           <div className="flex shrink-0 items-center gap-6 text-sm tracking-wide">
             {services.length > 0 && <a href="#services" className="hidden text-ivory/85 hover:text-ivory sm:inline">טיפולים</a>}
-            {images.gallery.length > 0 && <a href="#gallery" className="hidden text-ivory/85 hover:text-ivory sm:inline">גלריה</a>}
-            <a href="#book" className="border border-ivory/70 px-4 py-2 text-xs tracking-[0.15em] hover:bg-ivory hover:text-stone-900">לקביעת תור</a>
+            <a href="#gallery" className="hidden text-ivory/85 hover:text-ivory sm:inline">גלריה</a>
+            <a href={bookHref()} className="border border-ivory/70 px-4 py-2 text-xs tracking-[0.15em] hover:bg-ivory hover:text-stone-900">לקביעת תור</a>
           </div>
         </nav>
 
@@ -82,7 +89,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
           <h1 className="mt-4 max-w-4xl font-serif text-[3.25rem] font-light leading-[1.02] sm:text-8xl">{business.name}</h1>
           {business.tagline && <p className="mt-5 max-w-xl text-lg font-light leading-relaxed text-ivory/90 sm:text-xl">{business.tagline}</p>}
           <div className="mt-9 flex flex-wrap gap-3">
-            <a href="#book" className="btn bg-ivory px-8 py-3.5 tracking-[0.12em] text-stone-900 hover:bg-white">לקביעת תור</a>
+            <a href={bookHref()} className="btn bg-ivory px-8 py-3.5 tracking-[0.12em] text-stone-900 hover:bg-white">לקביעת תור</a>
             {services.length > 0 && (
               <a href="#services" className="btn border border-ivory/70 px-8 py-3.5 tracking-[0.12em] text-ivory hover:bg-ivory hover:text-stone-900">לטיפולים</a>
             )}
@@ -115,37 +122,24 @@ export default async function BusinessPage({ params, searchParams }: Props) {
           {/* Phones swipe through the cards; wider screens see them as a grid */}
           <div className={`mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:mx-auto sm:grid sm:max-w-6xl sm:overflow-visible sm:px-6 ${tileColumns(services.length)}`}>
             {services.map((s, i) => (
-              <ServiceCard key={s.id} service={s} index={i} />
+              <ServiceCard key={s.id} service={s} index={i} href={bookHref(s.id)} />
             ))}
           </div>
         </section>
       )}
 
-      {images.gallery.length > 0 && (
-        <section id="gallery" className="mx-auto max-w-6xl scroll-mt-6 px-4 pb-20 sm:px-6">
-          <SectionTitle eyebrow="מהסטודיו" title="גלריה" />
+      <section id="gallery" className="mx-auto max-w-6xl scroll-mt-6 px-4 pb-20 sm:px-6">
+        <SectionTitle eyebrow="מהסטודיו" title="גלריה" />
+        {images.gallery.length > 0 ? (
           <Gallery ids={images.gallery} />
-        </section>
-      )}
-
-      <section id="book" className="scroll-mt-4 border-t border-stone-200 bg-ivory py-16">
-        <div className="mx-auto max-w-xl px-4">
-          <SectionTitle eyebrow="קביעת תור" title="בחרי טיפול ומועד" />
-          <div className="mt-10">
-            <BookingFlow
-              slug={business.slug}
-              timezone={business.timezone}
-              requiresApproval={business.bookingMode === "APPROVAL"}
-              services={services}
-              initialServiceId={initialServiceId}
-              invite={
-                invitation
-                  ? { token: invitation.token, clientName: invitation.clientName, clientPhone: invitation.clientPhone }
-                  : null
-              }
-            />
+        ) : (
+          // Empty frames hold the gallery's place until the owner uploads photos.
+          <div aria-hidden className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
+            {EMPTY_FILLS.concat(EMPTY_FILLS).map((fill, i) => (
+              <div key={i} className={`aspect-square ${fill}`} />
+            ))}
           </div>
-        </div>
+        )}
       </section>
 
       <footer className="bg-stone-900 px-6 py-14 text-center text-ivory">
@@ -191,11 +185,11 @@ type ServiceCardData = { id: string; name: string; description: string; duration
 // Soft fills for cards whose owner hasn't added a photo yet.
 const EMPTY_FILLS = ["bg-sand", "bg-nude", "bg-stone-200"];
 
-function ServiceCard({ service: s, index }: { service: ServiceCardData; index: number }) {
+function ServiceCard({ service: s, index, href }: { service: ServiceCardData; index: number; href: string }) {
   const photo = Boolean(s.imageId);
   return (
     <a
-      href={`?service=${s.id}#book`}
+      href={href}
       className={`group relative block aspect-[3/4] w-[78%] shrink-0 snap-center overflow-hidden sm:w-auto ${photo ? "bg-stone-900" : EMPTY_FILLS[index % EMPTY_FILLS.length]}`}
     >
       {s.imageId ? (
