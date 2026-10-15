@@ -5,7 +5,7 @@ import { appUrl, businessUrl, rootDomain, slugFromHost } from "@/lib/url";
 const APP_ONLY = /^\/(dashboard|login|signup|onboarding|subscribe)(\/|$)/;
 const BUSINESS_PATH = /^\/b\/([a-z0-9]+(?:-[a-z0-9]+)*)(\/.*)?$/;
 // Shared routes that keep their own path on a subdomain; every other path belongs to the business page.
-const SHARED = /^\/(b|beauticians)(\/|$)/;
+const SHARED = /^\/(b|beauticians|terms|privacy)(\/|$)/;
 
 /**
  * Each business answers on its own subdomain: <slug>.<root domain>/<path> shows /b/<slug>/<path>

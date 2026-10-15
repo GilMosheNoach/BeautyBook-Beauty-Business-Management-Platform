@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LegalLinks } from "@/components/LegalFooter";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/money";
@@ -68,6 +69,7 @@ export default async function ManageAppointmentPage({ params, searchParams }: { 
       <p className="mt-6 text-center">
         <Link href={await businessPath(b.slug)} className="border-b border-current pb-0.5 text-sm tracking-wide text-stone-900">קביעת תור נוסף</Link>
       </p>
+      <LegalLinks className="mt-12 text-stone-500" />
     </main>
   );
 }

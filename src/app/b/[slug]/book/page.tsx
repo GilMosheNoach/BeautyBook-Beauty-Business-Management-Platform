@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/money";
 import { ChevronRightIcon } from "@/components/Icons";
+import { LegalFooter } from "@/components/LegalFooter";
 import { businessUrl } from "@/lib/url";
 import { businessPath } from "@/server/businessPath";
 import { BookingFlow } from "../BookingFlow";
@@ -69,6 +70,7 @@ export default async function BookPage({ params, searchParams }: Props) {
           invite={invitation ? { token: invitation.token, clientName: invitation.clientName, clientPhone: invitation.clientPhone } : null}
         />
       </section>
+      <LegalFooter />
     </main>
   );
 }

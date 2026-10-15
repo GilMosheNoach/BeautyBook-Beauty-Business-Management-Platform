@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Logo } from "@/components/Logo";
+import { LegalFooter } from "@/components/LegalFooter";
 import { JsonLd } from "@/components/JsonLd";
 import { PinIcon } from "@/components/Icons";
 import { db } from "@/lib/db";
@@ -63,6 +64,7 @@ export default async function BeauticiansPage() {
           </ul>
         )}
       </main>
+      <LegalFooter />
     </div>
   );
 }

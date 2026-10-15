@@ -1,4 +1,5 @@
 import { Logo } from "@/components/Logo";
+import { LegalFooter } from "@/components/LegalFooter";
 import { requireBusiness } from "@/lib/session";
 import { businessUrl } from "@/lib/url";
 import { logoutAction } from "@/server/actions/auth";
@@ -26,6 +27,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-5">{children}</main>
+      <LegalFooter className="mx-auto mt-8 max-w-6xl" />
       <BottomNav />
     </div>
   );
