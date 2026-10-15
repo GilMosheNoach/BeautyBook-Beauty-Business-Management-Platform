@@ -19,10 +19,10 @@ export default async function Home() {
         <Logo />
         <nav className="flex gap-2">
           {user ? (
-            <Link href="/dashboard" className="btn-primary btn-sm">ליומן שלי</Link>
+            <Link href="/dashboard" className="btn-primary btn-sm">ללוח הבקרה</Link>
           ) : (
             <>
-              <Link href="/login" className="btn-ghost btn-sm">התחברות</Link>
+              <Link href="/login" className="btn-secondary btn-sm">כניסה</Link>
               <Link href="/signup" className="btn-primary btn-sm">הרשמה</Link>
             </>
           )}
