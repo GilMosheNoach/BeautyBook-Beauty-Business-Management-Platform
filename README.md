@@ -83,6 +83,14 @@ npm run typecheck && npm run lint && npm test
 - **מה גוגל מקבל:** כותרת ותיאור לכל עסק (שם + "קוסמטיקאית" + עיר), `canonical`, Open Graph, נתונים מובנים `BeautySalon` (כתובת, טלפון, שעות, טיפולים ומחירים), `sitemap.xml` עם כל העסקים, `robots.txt` שמסתיר את הדשבורד ודפי התורים, ודף `/beauticians` שמרכז את כל העסקים.
 - **אחרי העלאה לאוויר:** לאמת את הדומיין ב-Google Search Console כ-Domain property (כך הוא מכסה את כל תתי-הדומיינים), לשים את קוד האימות ב-`GOOGLE_SITE_VERIFICATION`, ולהגיש את `https://beautybook.co.il/sitemap.xml`.
 
+## מנוי, תשלום והפניות
+
+- הרשמה ← דף תשלום (`/subscribe`) ← עמוד הסליקה ← הקמת העסק. בלי אמצעי תשלום שמור אין גישה לדשבורד.
+- חודשיים ראשונים חינם, אחר כך ₪300 לחודש. החיוב נעשה ב-`runBillingCycle` (`src/server/billing.ts`), שרץ פעם ביום דרך `POST /api/cron/billing` עם `Authorization: Bearer $CRON_SECRET`.
+- לכל בעלת עסק יש קישור הפניה (`/signup?ref=CODE`). על כל מופנית שכבר שילמה לפחות פעם אחת והמנוי שלה פעיל, המפנה מקבלת ₪100 הנחה בכל חיוב, עד מנוי חינם. ההנחה מחושבת מחדש בכל חיוב, כך שמופנית שביטלה או שהחיוב שלה נכשל מפסיקה להיחשב.
+- ביטול מנוי משאיר גישה עד סוף התקופה ששולמה. חיוב שנכשל נותן 7 ימי חסד ונוסה שוב כל יום.
+- `BILLING_PROVIDER="test"` מדמה את עמוד הסליקה (בלי פרטי כרטיס ובלי כסף), ומוסיף בדף המנוי כפתור "דילוג לחיוב הבא". חיבור לחברת סליקה אמיתית נעשה במימוש נוסף של `PaymentProvider` ב-`src/server/payments.ts`.
+
 ## פריסה
 
 מתאים ל-Vercel + Postgres מנוהל (Neon / Supabase). הגדירו `DATABASE_URL`, `SESSION_SECRET`, `NEXT_PUBLIC_APP_URL`, והריצו `npx prisma migrate deploy` לפני העלאה. ה-rate limit להזמנות ציבוריות הוא בזיכרון; כשיש כמה מופעים כדאי להעביר אותו ל-Redis/Upstash.

@@ -33,13 +33,72 @@ enum AppointmentSource {
   INVITE
 }
 
+enum SubscriptionStatus {
+  INCOMPLETE // signed up, no payment method yet
+  TRIALING // payment method saved, inside the free trial
+  ACTIVE // paid for the current period
+  PAST_DUE // the last charge failed
+  CANCELED // cancelled by the owner; access lasts until currentPeriodEnd
+}
+
+enum PaymentStatus {
+  SUCCEEDED
+  FAILED
+}
+
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
+  id           String        @id @default(cuid())
+  email        String        @unique
   passwordHash String
   name         String
-  createdAt    DateTime  @default(now())
+  createdAt    DateTime      @default(now())
   business     Business?
+  subscription Subscription?
+}
+
+// Billing account of a business owner. Referral credits are computed from the
+// referred subscriptions at charge time, so a cancelled referral stops counting.
+model Subscription {
+  id               String             @id @default(cuid())
+  userId           String             @unique
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status           SubscriptionStatus @default(INCOMPLETE)
+  referralCode     String             @unique
+  referredById     String?
+  referredBy       Subscription?      @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals        Subscription[]     @relation("Referrals")
+  trialEndsAt      DateTime?
+  currentPeriodEnd DateTime? // end of the trial or paid period = next charge date
+  firstPaidAt      DateTime? // the referrer's credit starts once this is set
+  canceledAt       DateTime?
+  provider         String             @default("")
+  customerRef      String             @default("") // gateway token for the saved card
+  cardLast4        String             @default("")
+  checkoutToken    String?            @unique
+  chargingAt       DateTime? // lock so two billing runs never charge twice
+  createdAt        DateTime           @default(now())
+  payments         Payment[]
+
+  @@index([referredById, status])
+  @@index([status, currentPeriodEnd])
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  status         PaymentStatus
+  baseAgorot     Int
+  discountAgorot Int
+  amountAgorot   Int
+  referralCount  Int
+  periodStart    DateTime
+  periodEnd      DateTime
+  providerRef    String        @default("")
+  failureReason  String        @default("")
+  createdAt      DateTime      @default(now())
+
+  @@index([subscriptionId, createdAt])
 }
 
 // The tenant. Every tenant-scoped row carries businessId.

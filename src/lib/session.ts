@@ -1,6 +1,7 @@
 import { getIronSession, type SessionOptions } from "iron-session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { hasAccess } from "./billing";
 import { db } from "./db";
 
 export type SessionData = { userId?: string };
@@ -38,12 +39,20 @@ export async function requireUser() {
   return user;
 }
 
+/** A signed-in owner whose subscription is in its trial or paid up. */
+export async function requireSubscribedUser() {
+  const user = await requireUser();
+  const subscription = await db.subscription.findUnique({ where: { userId: user.id } });
+  if (!hasAccess(subscription)) redirect("/subscribe");
+  return user;
+}
+
 /**
  * The signed-in owner's business. The tenant id always comes from the server
  * session, never from request input, so every query scoped by it is isolated.
  */
 export async function requireBusiness() {
-  const user = await requireUser();
+  const user = await requireSubscribedUser();
   if (!user.business) redirect("/onboarding");
   return user.business;
 }

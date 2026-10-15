@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/Logo";
-import { requireUser } from "@/lib/session";
+import { requireSubscribedUser } from "@/lib/session";
 import { slugAffixes } from "@/lib/url";
 import { OnboardingForm } from "./OnboardingForm";
 
 export const metadata = { title: "הקמת העסק" };
 
 export default async function OnboardingPage() {
-  const user = await requireUser();
+  const user = await requireSubscribedUser();
   if (user.business) redirect("/dashboard");
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">

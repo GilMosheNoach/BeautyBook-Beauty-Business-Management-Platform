@@ -11,8 +11,25 @@ async function main() {
   const email = "demo@beautybook.co.il";
   await db.user.deleteMany({ where: { email } });
 
+  const trialEnds = new Date();
+  trialEnds.setMonth(trialEnds.getMonth() + 2);
   const user = await db.user.create({
-    data: { email, name: "מיכל כהן", passwordHash: await hash(process.env.DEMO_PASSWORD || "demo1234") },
+    data: {
+      email,
+      name: "מיכל כהן",
+      passwordHash: await hash(process.env.DEMO_PASSWORD || "demo1234"),
+      subscription: {
+        create: {
+          status: "TRIALING",
+          referralCode: "DEMO2026",
+          trialEndsAt: trialEnds,
+          currentPeriodEnd: trialEnds,
+          provider: "test",
+          customerRef: "test_ok_demo",
+          cardLast4: "4242",
+        },
+      },
+    },
   });
   const business = await db.business.create({
     data: {

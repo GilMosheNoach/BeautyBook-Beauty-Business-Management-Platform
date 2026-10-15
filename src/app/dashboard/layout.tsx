@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { requireBusiness } from "@/lib/session";
 import { businessUrl } from "@/lib/url";
@@ -19,6 +20,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <a href={businessUrl(business.slug)} target="_blank" className="btn-ghost btn-sm hidden sm:inline-flex">
               הדף שלי <ExternalIcon size={14} />
             </a>
+            <Link href="/dashboard/billing" className="btn-ghost btn-sm">מנוי</Link>
             <form action={logoutAction}>
               <button className="btn-ghost btn-sm" type="submit">יציאה</button>
             </form>

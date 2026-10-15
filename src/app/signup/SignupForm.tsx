@@ -5,10 +5,11 @@ import { signupAction } from "@/server/actions/auth";
 import { FormMessage } from "@/components/FormMessage";
 import { SubmitButton } from "@/components/SubmitButton";
 
-export function SignupForm() {
+export function SignupForm({ referralCode }: { referralCode: string }) {
   const [state, action] = useActionState(signupAction, undefined);
   return (
     <form action={action} className="space-y-4">
+      {referralCode && <input type="hidden" name="ref" value={referralCode} />}
       <div>
         <label className="label" htmlFor="name">שם מלא</label>
         <input className="input" id="name" name="name" autoComplete="name" required />
@@ -23,7 +24,7 @@ export function SignupForm() {
         <p className="muted mt-1">8 תווים לפחות</p>
       </div>
       <FormMessage state={state} />
-      <SubmitButton className="btn-primary w-full" pendingText="יוצרת חשבון…">יצירת חשבון</SubmitButton>
+      <SubmitButton className="btn-primary w-full" pendingText="יוצרת חשבון…">המשך לתשלום</SubmitButton>
     </form>
   );
 }

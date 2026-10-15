@@ -5,12 +5,14 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/password";
 import { getSession } from "@/lib/session";
+import { createSubscription } from "@/server/billing";
 import type { FormState } from "@/components/FormMessage";
 
 const signupSchema = z.object({
   name: z.string().trim().min(2, "נא להזין שם מלא"),
   email: z.string().trim().toLowerCase().email("כתובת אימייל לא תקינה"),
   password: z.string().min(8, "סיסמה של 8 תווים לפחות"),
+  ref: z.string().max(32).optional(),
 });
 
 export async function signupAction(_: FormState, form: FormData): Promise<FormState> {
@@ -22,10 +24,11 @@ export async function signupAction(_: FormState, form: FormData): Promise<FormSt
   if (existing) return { error: "כבר קיים חשבון עם האימייל הזה. אפשר להתחבר." };
 
   const user = await db.user.create({ data: { name, email, passwordHash: await hashPassword(password) } });
+  await createSubscription(user.id, parsed.data.ref);
   const session = await getSession();
   session.userId = user.id;
   await session.save();
-  redirect("/onboarding");
+  redirect("/subscribe");
 }
 
 const loginSchema = z.object({

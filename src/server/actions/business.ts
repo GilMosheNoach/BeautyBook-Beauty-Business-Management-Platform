@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { requireBusiness, requireUser } from "@/lib/session";
+import { requireBusiness, requireSubscribedUser } from "@/lib/session";
 import { normalizeSlug, slugError } from "@/lib/slug";
 import { DEFAULT_HOURS, STARTER_SERVICES } from "@/lib/starterServices";
 import type { FormState } from "@/components/FormMessage";
@@ -17,7 +17,7 @@ const onboardingSchema = z.object({
 });
 
 export async function createBusinessAction(_: FormState, form: FormData): Promise<FormState> {
-  const user = await requireUser();
+  const user = await requireSubscribedUser();
   if (user.business) redirect("/dashboard");
 
   const parsed = onboardingSchema.safeParse({
