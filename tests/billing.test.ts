@@ -17,7 +17,7 @@ let n = 0;
 /** Signs up an owner (optionally through a referral link) and saves a card, starting the trial at `at`. */
 async function owner(at: Date, ref?: string, card = "test_ok") {
   const user = await db.user.create({ data: { email: `o${++n}${EMAIL}`, name: `owner ${n}`, passwordHash: "x" } });
-  const sub = await billing.createSubscription(user.id, ref);
+  const sub = await billing.createSubscription(user.id, ref, at);
   await db.subscription.update({ where: { id: sub.id }, data: { checkoutToken: `tok-${n}` } });
   return (await billing.completeCheckout(`tok-${n}`, { customerRef: `${card}_${n}`, last4: "4242" }, at))!;
 }
@@ -43,6 +43,8 @@ describe("pricing", () => {
   it("keeps access through a cancelled period and a short grace after a failed charge", () => {
     const now = new Date("2030-01-10T00:00:00Z");
     expect(hasAccess({ status: "INCOMPLETE", currentPeriodEnd: null }, now)).toBe(false);
+    expect(hasAccess({ status: "TRIALING", currentPeriodEnd: addDays(now, 30) }, now)).toBe(true);
+    expect(hasAccess({ status: "TRIALING", currentPeriodEnd: addDays(now, -8) }, now)).toBe(false);
     expect(hasAccess({ status: "CANCELED", currentPeriodEnd: addDays(now, 1) }, now)).toBe(true);
     expect(hasAccess({ status: "CANCELED", currentPeriodEnd: addDays(now, -1) }, now)).toBe(false);
     expect(hasAccess({ status: "PAST_DUE", currentPeriodEnd: addDays(now, -3) }, now)).toBe(true);
@@ -52,6 +54,17 @@ describe("pricing", () => {
 
 describe("trial and referrals", () => {
   const t0 = new Date("2030-01-01T09:00:00Z");
+
+  it("lets a new owner in without a card and asks for one when the trial ends", async () => {
+    const user = await db.user.create({ data: { email: `o${++n}${EMAIL}`, name: "no card", passwordHash: "x" } });
+    const sub = await billing.createSubscription(user.id, null, t0);
+    expect(sub.status).toBe("TRIALING");
+    expect(hasAccess(sub, addMonths(t0, 1))).toBe(true);
+    await billing.runBillingCycle(addMonths(t0, 2));
+    const after = await db.subscription.findUniqueOrThrow({ where: { id: sub.id } });
+    expect(after.status).toBe("PAST_DUE");
+    expect(hasAccess(after, addDays(addMonths(t0, 2), 8))).toBe(false);
+  });
 
   it("gives two free months, then charges ₪300", async () => {
     const sub = await owner(t0);

@@ -22,9 +22,10 @@ type AccessFields = Pick<Subscription, "status" | "currentPeriodEnd">;
 export function hasAccess(sub: AccessFields | null | undefined, now = new Date()) {
   if (!sub) return false;
   switch (sub.status) {
-    case "TRIALING":
     case "ACTIVE":
       return true;
+    // A trial runs until its end date (plus grace, in case the billing run is late); a card is not needed until then.
+    case "TRIALING":
     case "PAST_DUE":
       return !!sub.currentPeriodEnd && addDays(sub.currentPeriodEnd, PAST_DUE_GRACE_DAYS) > now;
     case "CANCELED":

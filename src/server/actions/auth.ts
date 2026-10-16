@@ -40,7 +40,7 @@ export async function signupAction(_: FormState, form: FormData): Promise<FormSt
   const session = await getSession();
   session.userId = user.id;
   await session.save();
-  redirect("/subscribe");
+  redirect("/onboarding");
 }
 
 const LOGIN_FAILURES_PER_EMAIL = 10;

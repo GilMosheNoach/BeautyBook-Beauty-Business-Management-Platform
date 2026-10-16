@@ -32,7 +32,7 @@ export function SignupForm({ referralCode }: { referralCode: string }) {
         </span>
       </label>
       <FormMessage state={state} />
-      <SubmitButton className="btn-primary w-full" pendingText="יוצרת חשבון…">המשך לתשלום</SubmitButton>
+      <SubmitButton className="btn-primary w-full" pendingText="יוצרת חשבון…">יצירת חשבון</SubmitButton>
     </form>
   );
 }

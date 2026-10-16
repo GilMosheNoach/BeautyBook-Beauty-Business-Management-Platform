@@ -31,12 +31,16 @@ export async function findReferrer(code: string | null | undefined) {
   });
 }
 
-export async function createSubscription(userId: string, referralCode?: string | null) {
+/** Starts the free trial at sign-up. A card is only needed before the trial ends. */
+export async function createSubscription(userId: string, referralCode?: string | null, now = new Date()) {
   const referrer = await findReferrer(referralCode);
   const referredById = referrer && referrer.userId !== userId ? referrer.id : null;
   for (let attempt = 0; ; attempt++) {
     try {
-      return await db.subscription.create({ data: { userId, referralCode: newReferralCode(), referredById } });
+      const ends = trialEndFrom(now);
+      return await db.subscription.create({
+        data: { userId, referralCode: newReferralCode(), referredById, status: "TRIALING", trialEndsAt: ends, currentPeriodEnd: ends },
+      });
     } catch (e) {
       if (!isUniqueViolation(e) || attempt >= 4) throw e;
       const existing = await db.subscription.findUnique({ where: { userId } });
@@ -68,8 +72,8 @@ export async function startCheckout(sub: Subscription, user: { email: string; na
 }
 
 /**
- * The gateway confirmed a saved card. A new sign-up starts its free trial; a
- * lapsed or failed subscription is charged right away with the new card.
+ * The gateway confirmed a saved card. A trial keeps its end date; a lapsed or
+ * failed subscription is charged right away with the new card.
  */
 export async function completeCheckout(token: string, card: { customerRef: string; last4: string }, now = new Date()) {
   const sub = await db.subscription.findUnique({ where: { checkoutToken: token } });

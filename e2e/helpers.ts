@@ -30,11 +30,7 @@ export async function signupOwner(page: Page, opts: { ref?: string } = {}) {
   await page.getByLabel("אימייל").fill(email);
   await page.getByLabel("סיסמה").fill(password);
   await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: "המשך לתשלום" }).click();
-  await page.waitForURL(/\/subscribe/);
-  await page.getByRole("button", { name: /הוספת כרטיס אשראי/ }).click();
-  await page.waitForURL(/test-checkout/);
-  await page.getByRole("button", { name: /כרטיס בדיקה תקין/ }).click();
+  await page.getByRole("button", { name: "יצירת חשבון" }).click();
   await page.waitForURL(/\/onboarding/);
   await page.getByLabel("שם העסק").fill(`סטודיו QA ${id}`);
   await page.getByLabel("כתובת הדף שלך").fill(slug);
