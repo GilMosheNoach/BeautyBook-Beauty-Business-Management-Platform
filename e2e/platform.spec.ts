@@ -175,7 +175,8 @@ test.describe("public page, SEO and subdomains", () => {
     const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').first().textContent())!);
     const nodes = Array.isArray(ld) ? ld : ld["@graph"] ?? [ld];
     expect(JSON.stringify(nodes)).toContain("BeautySalon");
-    await expect(page.locator(`a[href$="/b/${DEMO.slug}/book"], a[href$="/book"]`).first()).toBeVisible();
+    // Treatment tiles link straight to booking with that treatment chosen.
+    await expect(page.locator('#services a[href*="/book?service="]').first()).toBeVisible();
     await expect(page.getByRole("link", { name: "תנאי שימוש" }).first()).toHaveAttribute("href", "/terms");
     await expect(page.getByRole("link", { name: /מדיניות פרטיות|פרטיות/ }).first()).toHaveAttribute("href", "/privacy");
   });
