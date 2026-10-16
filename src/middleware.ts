@@ -22,7 +22,7 @@ export function middleware(req: NextRequest) {
   if (slug) {
     const own = pathname.match(BUSINESS_PATH);
     if (isRead && own && own[1] === slug) return NextResponse.redirect(businessUrl(slug, (own[2] || "/") + search), 308);
-    if (APP_ONLY.test(pathname)) return isRead ? NextResponse.redirect(appUrl(pathname + search), 308) : NextResponse.next();
+    if (APP_ONLY.test(pathname)) return isRead ? toAppHost(req, appUrl(pathname + search)) : NextResponse.next();
     if (SHARED.test(pathname)) return NextResponse.next();
     const url = req.nextUrl.clone();
     url.pathname = `/b/${slug}${pathname === "/" ? "" : pathname}`;
@@ -32,6 +32,21 @@ export function middleware(req: NextRequest) {
   const match = rootDomain() && isRead ? pathname.match(BUSINESS_PATH) : null;
   if (match) return NextResponse.redirect(businessUrl(match[1], (match[2] || "") + search), 308);
   return NextResponse.next();
+}
+
+/**
+ * Redirect from a business subdomain to the main app host. Next.js rewrites a
+ * redirect whose origin equals the server's own origin into a relative path,
+ * which the browser resolves against the subdomain again: an endless loop on
+ * <slug>.localhost when the app runs at http://localhost:<port>. In that case
+ * an HTML page does the hop instead.
+ */
+function toAppHost(req: NextRequest, target: string) {
+  if (new URL(target).origin !== req.nextUrl.origin) return NextResponse.redirect(target, 308);
+  const safe = target.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  return new NextResponse(`<!doctype html><meta http-equiv="refresh" content="0;url=${safe}"><a href="${safe}">${safe}</a>`, {
+    headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" },
+  });
 }
 
 export const config = {

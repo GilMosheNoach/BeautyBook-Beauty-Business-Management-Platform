@@ -3,7 +3,7 @@
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { db } from "@/lib/db";
 import { requireBusiness } from "@/lib/session";
 import { isValidPhone, normalizePhone } from "@/lib/phone";

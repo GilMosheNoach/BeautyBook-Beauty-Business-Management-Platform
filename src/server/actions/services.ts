@@ -1,17 +1,24 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { db } from "@/lib/db";
 import { requireBusiness } from "@/lib/session";
 import { shekelsToAgorot } from "@/lib/money";
 import type { FormState } from "@/components/FormMessage";
 
+const MAX_PRICE_SHEKELS = 100_000;
+
 const serviceSchema = z.object({
   name: z.string().trim().min(2, "נא להזין שם שירות").max(80),
   description: z.string().trim().max(500).default(""),
   durationMin: z.coerce.number().int().min(5, "משך מינימלי 5 דקות").max(600),
-  price: z.string().refine((v) => !Number.isNaN(Number(v)) && Number(v) >= 0, "מחיר לא תקין"),
+  // Plain shekels with up to 2 decimals ("150", "99.90"); "₪" and thousands commas are fine.
+  price: z
+    .string()
+    .transform((v) => v.replace(/[₪,\s]/g, ""))
+    .refine((v) => /^\d+(\.\d{1,2})?$/.test(v), "מחיר לא תקין")
+    .refine((v) => Number(v) <= MAX_PRICE_SHEKELS, `המחיר המקסימלי הוא ₪${MAX_PRICE_SHEKELS.toLocaleString("he-IL")}`),
 });
 
 function revalidate(slug: string) {

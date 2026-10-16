@@ -1,10 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { db } from "@/lib/db";
 import { requireBusiness } from "@/lib/session";
-import { addDaysToKey, hhmmToMinutes, isDateKey, localMinutesToDate } from "@/lib/time";
+import { addDaysToKey, hhmmToMinutes, isDateKey, isHHMM, localMinutesToDate } from "@/lib/time";
 import type { FormState } from "@/components/FormMessage";
 
 const rangesSchema = z.array(
@@ -57,6 +57,7 @@ export async function addTimeOffAction(_: FormState, form: FormData): Promise<Fo
   const d = parsed.data;
   const tz = business.timezone;
   const allDay = d.allDay === "on" || !d.fromTime || !d.toTime;
+  if (!allDay && (!isHHMM(d.fromTime) || !isHHMM(d.toTime))) return { error: "שעה לא תקינה" };
   const startsAt = localMinutesToDate(d.fromDate, allDay ? 0 : hhmmToMinutes(d.fromTime), tz);
   const endsAt = allDay
     ? localMinutesToDate(addDaysToKey(d.toDate, 1), 0, tz)

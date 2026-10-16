@@ -185,15 +185,15 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
           <form action={submit} className="space-y-4">
             <div>
               <label className="label" htmlFor="bk-name">שם מלא</label>
-              <input className="input" id="bk-name" name="name" autoComplete="name" defaultValue={invite?.clientName} required minLength={2} />
+              <input className="input" id="bk-name" name="name" autoComplete="name" defaultValue={invite?.clientName} required minLength={2} maxLength={80} />
             </div>
             <div>
               <label className="label" htmlFor="bk-phone">טלפון</label>
-              <input className="input" id="bk-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" dir="ltr" defaultValue={invite?.clientPhone} placeholder="050-0000000" required />
+              <input className="input" id="bk-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" dir="ltr" defaultValue={invite?.clientPhone} placeholder="050-0000000" maxLength={20} required />
             </div>
             <div>
               <label className="label" htmlFor="bk-note">הערה (לא חובה)</label>
-              <textarea className="input" id="bk-note" name="note" rows={2} />
+              <textarea className="input" id="bk-note" name="note" rows={2} maxLength={500} />
             </div>
             <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
             {error && <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}

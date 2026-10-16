@@ -47,6 +47,15 @@ npm run db:seed            # עסק הדמו
 npm run typecheck && npm run lint && npm test
 ```
 
+בדיקות דפדפן (Playwright) עוברות על כל הזרימות מקצה לקצה: הרשמה ותשלום בדיקה, הזמנת תור כאורחת, אישור, ביטול, יומן, הזמנות, העלאת תמונות, בידוד בין עסקים, כתובות משנה ו-SEO. הן רצות מול המסד הרגיל אחרי `npm run db:seed`, ומרימות את האפליקציה בעצמן אחרי `npm run build`:
+
+```bash
+npx playwright install chromium   # פעם אחת
+npm run build && npm run test:e2e
+# או מול אפליקציה שכבר רצה:
+E2E_BASE_URL=http://localhost:3000 npm run test:e2e
+```
+
 בדיקות האינטגרציה רצות מול מסד `beautybook_test`, שנוצר אוטומטית בקונטיינר של Docker (או מול `TEST_DATABASE_URL`), ובודקות בידוד בין עסקים ומניעת כפל הזמנות במקביל.
 
 ## מבנה

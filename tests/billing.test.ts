@@ -101,6 +101,38 @@ describe("trial and referrals", () => {
     expect((await billing.currentPrice(referrer.id)).referrals).toBe(0);
   });
 
+  it("credits only direct referrals along a referral chain", async () => {
+    const a = await owner(t0);
+    const b = await owner(t0, a.referralCode);
+    const c = await owner(t0, b.referralCode);
+    await billing.chargeSubscription(b.id, b.currentPeriodEnd!);
+    await billing.chargeSubscription(c.id, c.currentPeriodEnd!);
+    expect((await billing.currentPrice(a.id)).referrals).toBe(1);
+    expect((await billing.currentPrice(b.id)).referrals).toBe(1);
+    expect((await billing.currentPrice(c.id)).referrals).toBe(0);
+  });
+
+  it("never discounts below zero with more than three paying referrals", async () => {
+    const referrer = await owner(t0);
+    for (let i = 0; i < 4; i++) {
+      const f = await owner(t0, referrer.referralCode);
+      await billing.chargeSubscription(f.id, f.currentPeriodEnd!);
+    }
+    expect(await billing.currentPrice(referrer.id)).toMatchObject({ referrals: 4, discountAgorot: 30000, totalAgorot: 0 });
+  });
+
+  it("brings the credit back when a failed referral pays again", async () => {
+    const referrer = await owner(t0);
+    const friend = await owner(t0, referrer.referralCode);
+    await billing.chargeSubscription(friend.id, friend.currentPeriodEnd!);
+    await db.subscription.update({ where: { id: friend.id }, data: { customerRef: "test_decline_x" } });
+    await billing.chargeSubscription(friend.id, addMonths(t0, 3));
+    expect((await billing.currentPrice(referrer.id)).referrals).toBe(0);
+    await db.subscription.update({ where: { id: friend.id }, data: { customerRef: "test_ok_x" } });
+    await billing.chargeSubscription(friend.id, addMonths(t0, 3));
+    expect((await billing.currentPrice(referrer.id)).referrals).toBe(1);
+  });
+
   it("ignores unknown and self referral codes", async () => {
     const sub = await owner(t0, "NOPE1234");
     expect(sub.referredById).toBeNull();

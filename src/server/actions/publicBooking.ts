@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { db } from "@/lib/db";
 import { isValidPhone } from "@/lib/phone";
 import { rateLimit } from "@/lib/rateLimit";

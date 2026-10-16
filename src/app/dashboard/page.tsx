@@ -60,8 +60,14 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
     db.service.count({ where: { businessId: business.id, active: true } }),
   ]);
 
-  const gridStart = Math.min(8 * 60, ...hours.map((h) => Math.floor(h.startMin / 60) * 60));
-  const gridEnd = Math.max(20 * 60, ...hours.map((h) => Math.ceil(h.endMin / 60) * 60));
+  // The grid covers working hours, and stretches for appointments booked outside them (e.g. a manual 21:30).
+  const apptMinutes = appointments.flatMap((a) => {
+    const startDay = localDateKey(a.startsAt, tz);
+    const endsNextDay = localDateKey(a.endsAt, tz) !== startDay;
+    return [localMinutes(a.startsAt, tz), endsNextDay ? 24 * 60 : localMinutes(a.endsAt, tz)];
+  });
+  const gridStart = Math.min(8 * 60, ...[...hours.map((h) => h.startMin), ...apptMinutes].map((m) => Math.floor(m / 60) * 60));
+  const gridEnd = Math.max(20 * 60, ...[...hours.map((h) => h.endMin), ...apptMinutes].map((m) => Math.ceil(m / 60) * 60));
   const hourMarks = Array.from({ length: (gridEnd - gridStart) / 60 }, (_, i) => gridStart + i * 60);
   const bookingUrl = businessUrl(business.slug);
   const step = view === "week" ? 7 : 1;

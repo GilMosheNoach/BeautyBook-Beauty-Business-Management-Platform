@@ -3,10 +3,10 @@
 import type { AppointmentStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { requireBusiness } from "@/lib/session";
 import { isValidPhone } from "@/lib/phone";
-import { hhmmToMinutes, isDateKey, localMinutesToDate } from "@/lib/time";
+import { hhmmToMinutes, isDateKey, isHHMM, localMinutesToDate } from "@/lib/time";
 import { createAppointment, setAppointmentStatus, SlotTakenError } from "@/server/appointments";
 import type { FormState } from "@/components/FormMessage";
 
@@ -28,10 +28,10 @@ export async function changeStatusAction(form: FormData) {
 const manualSchema = z.object({
   serviceId: z.string().min(1, "נא לבחור שירות"),
   date: z.string().refine(isDateKey, "תאריך לא תקין"),
-  time: z.string().regex(/^\d{2}:\d{2}$/, "שעה לא תקינה"),
+  time: z.string().refine(isHHMM, "שעה לא תקינה"),
   clientId: z.string().optional().default(""),
-  clientName: z.string().trim().optional().default(""),
-  clientPhone: z.string().trim().optional().default(""),
+  clientName: z.string().trim().max(80, "השם ארוך מדי").optional().default(""),
+  clientPhone: z.string().trim().max(20).optional().default(""),
   durationMin: z.coerce.number().int().min(5).max(600).optional(),
   note: z.string().max(500).optional().default(""),
 });

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { db } from "@/lib/db";
 import { requireBusiness } from "@/lib/session";
 import { isValidPhone, normalizePhone } from "@/lib/phone";

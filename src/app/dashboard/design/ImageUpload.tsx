@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from "react";
 import { uploadImageAction } from "@/server/actions/images";
 
 const MAX_SIDE = 2000;
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 /** Shrinks a phone photo to at most 2000px on its long side, as JPEG, before upload. */
 async function shrink(file: File): Promise<Blob> {
@@ -44,11 +45,16 @@ export function ImageUpload({ kind, serviceId, multiple, className = "btn-second
         } catch {
           // Formats the browser can't decode (e.g. some HEIC) go up as-is and the server decides.
         }
+        // The server takes up to 4MB; a bigger file would be cut off by the upload limit with no message.
+        if (blob.size > MAX_UPLOAD_BYTES) {
+          setError("התמונה גדולה מדי (עד 4MB). נסי תמונה אחרת או צילום מסך שלה.");
+          break;
+        }
         const form = new FormData();
         form.set("kind", kind);
         if (serviceId) form.set("serviceId", serviceId);
         form.set("file", blob, "photo.jpg");
-        const res = await uploadImageAction(form);
+        const res = await uploadImageAction(form).catch(() => ({ error: "ההעלאה נכשלה. נסי שוב." }));
         if (res?.error) {
           setError(res.error);
           break;

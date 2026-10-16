@@ -15,7 +15,8 @@
     "setup:env": "node scripts/setup-env.mjs",
     "db:up": "docker compose up -d --wait postgres",
     "db:down": "docker compose down",
-    "setup": "npm run setup:env && npm run db:up && prisma migrate deploy && npm run db:seed"
+    "setup": "npm run setup:env && npm run db:up && prisma migrate deploy && npm run db:seed",
+    "test:e2e": "playwright test"
   },
   "prisma": {
     "seed": "tsx --env-file=.env prisma/seed.ts"
@@ -33,6 +34,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

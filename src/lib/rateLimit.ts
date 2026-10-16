@@ -15,3 +15,9 @@ export function rateLimit(key: string, limit: number, windowMs: number) {
   bucket.count += 1;
   return bucket.count <= limit;
 }
+
+/** True once `key` has used up `limit` within its current window, without counting this check. */
+export function isRateLimited(key: string, limit: number) {
+  const bucket = buckets.get(key);
+  return !!bucket && bucket.resetAt > Date.now() && bucket.count >= limit;
+}
