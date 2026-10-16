@@ -9,6 +9,7 @@ import { changeStatusAction } from "@/server/actions/appointments";
 import { CopyButton } from "@/components/CopyButton";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/Icons";
+import { NowLine } from "./NowLine";
 
 export const metadata = { title: "יומן" };
 
@@ -201,6 +202,7 @@ export default async function CalendarPage({ searchParams }: { searchParams: Pro
                   {dayAppts.map((a) => (
                     <ApptBlock key={a.id} a={a} tz={tz} top={(clampTop(a.startsAt) - gridStart) * PX_PER_MIN} height={Math.max(22, (clampBottom(a.endsAt) - clampTop(a.startsAt)) * PX_PER_MIN)} compact={view === "week"} />
                   ))}
+                  {d === today && <NowLine tz={tz} gridStart={gridStart} gridEnd={gridEnd} pxPerMin={PX_PER_MIN} />}
                 </div>
               );
             })}
