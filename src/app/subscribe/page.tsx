@@ -22,6 +22,8 @@ export default async function SubscribePage({ searchParams }: { searchParams: Pr
 
   return (
     <AuthShell
+      back="/"
+      backLabel="לדף הבית"
       title={isNew ? "בחירת אמצעי תשלום" : "חידוש המנוי"}
       subtitle={isNew ? "עוד צעד אחד ויש לך דף הזמנות משלך." : "המנוי שלך לא פעיל כרגע. אחרי התשלום הכול חוזר לעבוד בדיוק כמו שהיה."}
     >

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Logo } from "@/components/Logo";
+import { GateBar } from "@/components/GateBar";
 import { LegalLinks } from "@/components/LegalFooter";
 import { requireSubscribedUser } from "@/lib/session";
 import { slugAffixes } from "@/lib/url";
@@ -12,7 +12,7 @@ export default async function OnboardingPage() {
   if (user.business) redirect("/dashboard");
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
-      <Logo />
+      <GateBar back="/" backLabel="לדף הבית" />
       <h1 className="h1 mt-8">היי {user.name.split(" ")[0]}, בואי נקים את העסק שלך</h1>
       <p className="muted mt-1 mb-6">שלושה צעדים קצרים ויש לך דף הזמנות פעיל.</p>
       <OnboardingForm {...slugAffixes()} />
