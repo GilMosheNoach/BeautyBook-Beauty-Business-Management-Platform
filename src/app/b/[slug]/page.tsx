@@ -116,7 +116,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
           </div>
         </nav>
 
-        <div id="top" className="relative mx-auto mt-auto w-full max-w-6xl px-6 pb-24 sm:px-10 sm:pb-24">
+        <div id="top" className="relative mx-auto my-auto w-full max-w-6xl px-6 pb-10 sm:px-10">
           {business.address && <p className="text-xs tracking-[0.3em] text-ivory/80">{business.address}</p>}
           <h1 className="mt-4 max-w-4xl font-serif text-[3.25rem] font-extralight leading-[1.02] sm:text-8xl">{business.name}</h1>
           {business.tagline && <p className="mt-5 max-w-xl text-lg font-light leading-relaxed text-ivory/90 sm:text-xl">{business.tagline}</p>}
