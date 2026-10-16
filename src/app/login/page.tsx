@@ -1,13 +1,10 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/AuthShell";
-import { getCurrentUser } from "@/lib/session";
 import { LoginForm } from "./LoginForm";
 
 export const metadata = { title: "התחברות" };
 
 export default async function LoginPage() {
-  if (await getCurrentUser()) redirect("/dashboard");
   return (
     <AuthShell title="ברוכה השבה" subtitle="התחברי לניהול היומן והעסק שלך">
       <LoginForm />
