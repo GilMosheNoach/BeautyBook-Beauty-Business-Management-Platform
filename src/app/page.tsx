@@ -95,7 +95,7 @@ export default async function Home() {
         <div className="h-20" />
       </main>
       <footer className="border-t border-stone-200 py-8 text-center text-sm text-stone-600">
-        <Link href="/beauticians" className="hover:text-stone-900">קוסמטיקאיות · קביעת תור אונליין</Link>
+        <Link href="/beauticians" className="hover:text-stone-900">עסקי יופי · קביעת תור אונליין</Link>
         <LegalLinks className="mt-4 text-stone-500" />
       </footer>
     </div>
