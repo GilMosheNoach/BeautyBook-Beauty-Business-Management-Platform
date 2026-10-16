@@ -62,17 +62,17 @@ export default async function Home() {
             )}
           </div>
         </nav>
-        <div className="relative mx-auto mt-auto w-full max-w-6xl px-6 pb-20 sm:px-10 sm:pb-24">
+        <div className="relative mx-auto my-auto w-full max-w-6xl px-6 py-16 text-center sm:px-10">
           <p className="text-xs tracking-[0.3em] text-ivory/80">לקוסמטיקאיות ובעלות עסקי יופי</p>
-          <h1 className="mt-5 max-w-4xl font-serif text-5xl font-extralight leading-[1.05] sm:text-8xl">
-            התורים של העסק שלך,
-            <br />
+          <h1 className="mx-auto mt-5 max-w-4xl font-serif text-[2.6rem] font-extralight leading-[1.05] sm:text-8xl">
+            התורים של העסק <span className="whitespace-nowrap">שלך,</span>{" "}
+            <br className="hidden sm:inline" />
             בקישור אחד.
           </h1>
-          <p className="mt-6 max-w-xl text-lg font-light leading-relaxed text-ivory/90">
+          <p className="mx-auto mt-6 max-w-xl text-lg font-light leading-relaxed text-ivory/90">
             דף הזמנות אישי, יומן לניהול לוח הזמנים וניהול לקוחות. בלי אפליקציה ובלי הרשמה ללקוחות.
           </p>
-          <div className="mt-9 flex flex-wrap gap-3">
+          <div className="mt-9 flex flex-wrap justify-center gap-3">
             <Link href={user ? "/dashboard" : "/signup"} className="btn bg-ivory px-8 py-3.5 tracking-[0.12em] text-stone-900 hover:bg-white">מתחילות בחינם</Link>
             <a href={businessUrl("demo")} className="btn border border-ivory/70 px-8 py-3.5 tracking-[0.12em] text-ivory hover:bg-ivory hover:text-stone-900">לדף לדוגמה</a>
           </div>
