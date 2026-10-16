@@ -39,6 +39,19 @@ export async function requireUser() {
   return user;
 }
 
+/**
+ * On the login and signup pages: a finished account (business set up, trial or
+ * paid up) goes straight to its dashboard, while an account that never finished
+ * signing up is signed out so the plain form shows.
+ */
+export async function redirectSignedInOwner(page: "/login" | "/signup") {
+  const user = await getCurrentUser();
+  if (!user) return;
+  const subscription = await db.subscription.findUnique({ where: { userId: user.id } });
+  if (user.business && hasAccess(subscription)) redirect("/dashboard");
+  redirect(`/api/auth/reset?next=${page}`);
+}
+
 /** A signed-in owner whose subscription is in its trial or paid up. */
 export async function requireSubscribedUser() {
   const user = await requireUser();

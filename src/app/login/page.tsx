@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { AuthShell } from "@/components/AuthShell";
+import { redirectSignedInOwner } from "@/lib/session";
 import { LoginForm } from "./LoginForm";
 
 export const metadata = { title: "התחברות" };
 
 export default async function LoginPage() {
+  await redirectSignedInOwner("/login");
   return (
     <AuthShell title="ברוכה השבה" subtitle="התחברי לניהול היומן והעסק שלך">
       <LoginForm />
