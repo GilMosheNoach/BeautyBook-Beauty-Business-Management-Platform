@@ -255,8 +255,7 @@ function ServiceCard({ service: s, index, href, shape }: { service: ServiceCardD
           {String(index + 1).padStart(2, "0")}
         </span>
       )}
-      {/* Hover / keyboard focus: the other tiles fade back and a fine frame draws in around this one */}
-      <span aria-hidden className={`pointer-events-none absolute inset-3 border opacity-0 transition duration-500 group-hover:opacity-100 group-focus-visible:opacity-100 ${photo ? "border-ivory/70" : "border-stone-900/60"}`} />
+      {/* Hover: the other tiles fade back */}
       <div className={`absolute inset-x-0 bottom-0 p-7 transition-transform duration-500 group-hover:-translate-y-1 sm:p-8 ${photo ? "text-ivory" : "text-stone-900"}`}>
         <p className="font-serif text-[2rem] font-extralight leading-tight sm:text-[2.25rem]">{s.name}</p>
         {s.description && <p className="mt-2 line-clamp-2 text-sm leading-relaxed opacity-85">{s.description}</p>}
