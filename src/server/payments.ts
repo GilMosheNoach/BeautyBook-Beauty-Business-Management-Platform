@@ -25,12 +25,20 @@ const testProvider: PaymentProvider = {
   },
 };
 
+/**
+ * Test billing hands out subscriptions for free, so a production server only uses
+ * it when BILLING_PROVIDER="test" is set on purpose; a forgotten setting fails closed.
+ */
+function providerName() {
+  return process.env.BILLING_PROVIDER || (process.env.NODE_ENV === "production" ? "" : "test");
+}
+
 export function paymentProvider(): PaymentProvider {
-  const name = process.env.BILLING_PROVIDER || "test";
+  const name = providerName();
   if (name === "test") return testProvider;
-  throw new Error(`Unknown BILLING_PROVIDER "${name}"`);
+  throw new Error(name ? `Unknown BILLING_PROVIDER "${name}"` : "BILLING_PROVIDER is not set");
 }
 
 export function isTestBilling() {
-  return paymentProvider().name === "test";
+  return providerName() === "test";
 }

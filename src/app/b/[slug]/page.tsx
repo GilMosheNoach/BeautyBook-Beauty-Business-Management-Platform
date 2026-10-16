@@ -199,7 +199,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
             <a href={`tel:${business.phone}`} className="inline-flex items-center gap-2 hover:text-ivory"><PhoneIcon size={16} /><span dir="ltr">{business.phone}</span></a>
           )}
           {instagram && (
-            <a href={`https://instagram.com/${instagram}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-ivory">
+            <a href={`https://instagram.com/${encodeURIComponent(instagram)}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-ivory">
               <InstagramIcon size={16} /><span dir="ltr">@{instagram}</span>
             </a>
           )}

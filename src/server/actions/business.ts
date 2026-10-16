@@ -60,7 +60,11 @@ const settingsSchema = z.object({
   slug: z.string().transform(normalizeSlug),
   phone: z.string().trim().max(20),
   address: z.string().trim().max(120),
-  instagram: z.string().trim().max(60),
+  instagram: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/^@/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//i, "").replace(/\/+$/, ""))
+    .refine((v) => /^[A-Za-z0-9._]{0,30}$/.test(v), "שם משתמש באינסטגרם לא תקין"),
   bookingMode: z.enum(["AUTO", "APPROVAL"]),
   slotStepMin: z.coerce.number().int().refine((n) => [5, 10, 15, 20, 30, 60].includes(n), "מרווח לא תקין"),
   minNoticeMin: z.coerce.number().int().min(0).max(60 * 24 * 14),

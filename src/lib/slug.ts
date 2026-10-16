@@ -2,6 +2,7 @@ const RESERVED = new Set([
   "admin", "api", "dashboard", "login", "signup", "onboarding", "b", "app", "www", "help", "support",
   // Slugs double as subdomains, so keep common infrastructure names free too.
   "mail", "email", "ftp", "smtp", "blog", "cdn", "static", "img", "assets", "beauticians",
+  "terms", "privacy", "subscribe", "billing", "account", "secure", "security", "status", "auth", "root",
 ]);
 
 export function normalizeSlug(input: string) {

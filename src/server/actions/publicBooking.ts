@@ -1,16 +1,17 @@
 "use server";
 
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { z } from "@/lib/zod";
 import { db } from "@/lib/db";
-import { isValidPhone } from "@/lib/phone";
-import { rateLimit } from "@/lib/rateLimit";
+import { isValidPhone, normalizePhone } from "@/lib/phone";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { localDateKey } from "@/lib/time";
 import { availableSlots } from "@/server/availability";
 import { createAppointment, SlotTakenError } from "@/server/appointments";
 
 export type BookingResult = { ok: true; token: string; status: "PENDING" | "CONFIRMED" } | { ok: false; error: string; slotTaken?: boolean };
+
+const MAX_UPCOMING_PER_PHONE = 3;
 
 const bookingSchema = z.object({
   slug: z.string().min(1),
@@ -28,8 +29,7 @@ export async function bookAppointmentAction(input: z.input<typeof bookingSchema>
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
   const d = parsed.data;
 
-  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0].trim() || "local";
-  if (!rateLimit(`book:${ip}`, 8, 10 * 60_000)) {
+  if (!rateLimit(`book:${await clientIp()}`, 8, 10 * 60_000)) {
     return { ok: false, error: "יותר מדי ניסיונות. נסי שוב בעוד כמה דקות." };
   }
 
@@ -44,6 +44,19 @@ export async function bookAppointmentAction(input: z.input<typeof bookingSchema>
   const slots = await availableSlots(business, service.durationMin, localDateKey(startsAt, business.timezone));
   if (!slots.some((s) => s.getTime() === startsAt.getTime())) {
     return { ok: false, error: "השעה הזו כבר לא פנויה. בחרי שעה אחרת.", slotTaken: true };
+  }
+
+  // One phone number can't fill a calendar with fake requests.
+  const upcoming = await db.appointment.count({
+    where: {
+      businessId: business.id,
+      client: { phone: normalizePhone(d.phone) },
+      status: { in: ["PENDING", "CONFIRMED"] },
+      startsAt: { gt: new Date() },
+    },
+  });
+  if (upcoming >= MAX_UPCOMING_PER_PHONE) {
+    return { ok: false, error: `כבר יש לך ${MAX_UPCOMING_PER_PHONE} תורים עתידיים כאן. לתור נוסף אפשר לפנות לעסק ישירות.` };
   }
 
   const invitation = d.invite
@@ -72,6 +85,7 @@ export async function bookAppointmentAction(input: z.input<typeof bookingSchema>
 
 export async function cancelByClientAction(form: FormData) {
   const token = String(form.get("token") ?? "");
+  if (!token || token.length > 64 || !rateLimit(`cancel:${await clientIp()}`, 20, 10 * 60_000)) return;
   const appt = await db.appointment.findUnique({ where: { manageToken: token }, include: { business: true } });
   if (!appt || !["PENDING", "CONFIRMED"].includes(appt.status) || appt.startsAt <= new Date()) return;
   await db.appointment.update({ where: { id: appt.id }, data: { status: "CANCELLED" } });

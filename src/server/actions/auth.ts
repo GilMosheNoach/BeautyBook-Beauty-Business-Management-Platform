@@ -1,20 +1,29 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "@/lib/zod";
 import { db } from "@/lib/db";
 import { TERMS_VERSION } from "@/lib/legal";
-import { hashPassword, verifyPassword } from "@/lib/password";
-import { isRateLimited, rateLimit } from "@/lib/rateLimit";
+import { burnPasswordCheck, hashPassword, verifyPassword } from "@/lib/password";
+import { clientIp, isRateLimited, rateLimit } from "@/lib/rateLimit";
 import { getSession } from "@/lib/session";
 import { createSubscription } from "@/server/billing";
 import type { FormState } from "@/components/FormMessage";
 
+// The passwords guessed first; a list this short only stops the worst choices.
+const COMMON_PASSWORDS = new Set([
+  "12345678", "123456789", "1234567890", "password", "password1", "qwerty123", "qwertyui", "11111111",
+  "abcd1234", "1q2w3e4r", "iloveyou", "beautybook", "a1234567", "aa123456", "asdfghjk", "00000000",
+]);
+
 const signupSchema = z.object({
   name: z.string().trim().min(2, "נא להזין שם מלא").max(80, "השם ארוך מדי"),
   email: z.string().trim().toLowerCase().max(254, "כתובת אימייל ארוכה מדי").email("כתובת אימייל לא תקינה"),
-  password: z.string().min(8, "סיסמה של 8 תווים לפחות").max(200, "הסיסמה ארוכה מדי"),
+  password: z
+    .string()
+    .min(8, "סיסמה של 8 תווים לפחות")
+    .max(200, "הסיסמה ארוכה מדי")
+    .refine((p) => !COMMON_PASSWORDS.has(p.toLowerCase()) && new Set(p).size > 2, "הסיסמה קלה מדי לניחוש, נסי סיסמה אחרת"),
   ref: z.string().max(32).optional(),
   acceptTerms: z.literal("on", { message: "יש לאשר את תנאי השימוש ומדיניות הפרטיות" }),
 });
@@ -23,6 +32,7 @@ export async function signupAction(_: FormState, form: FormData): Promise<FormSt
   const parsed = signupSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const { name, email, password } = parsed.data;
+  if (!rateLimit(`signup:${await clientIp()}`, 10, 60 * 60_000)) return { error: "יותר מדי הרשמות מהמכשיר הזה. נסי שוב מאוחר יותר." };
 
   const existing = await db.user.findUnique({ where: { email } });
   if (existing) return { error: "כבר קיים חשבון עם האימייל הזה. אפשר להתחבר." };
@@ -56,12 +66,13 @@ export async function loginAction(_: FormState, form: FormData): Promise<FormSta
   const parsed = loginSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   // Slows down password guessing: failed attempts per address, and per visitor across addresses.
-  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0].trim() || "local";
-  const keys = [`login:${parsed.data.email}`, `login-ip:${ip}`];
+  const keys = [`login:${parsed.data.email}`, `login-ip:${await clientIp()}`];
   if (isRateLimited(keys[0], LOGIN_FAILURES_PER_EMAIL) || isRateLimited(keys[1], LOGIN_FAILURES_PER_IP)) {
     return { error: "יותר מדי ניסיונות כניסה. נסי שוב בעוד כמה דקות." };
   }
   const user = await db.user.findUnique({ where: { email: parsed.data.email } });
+  // Unknown emails take as long as wrong passwords, so timing doesn't reveal who has an account.
+  if (!user) await burnPasswordCheck(parsed.data.password);
   if (!user || !(await verifyPassword(user.passwordHash, parsed.data.password))) {
     rateLimit(keys[0], LOGIN_FAILURES_PER_EMAIL, LOGIN_WINDOW_MS);
     rateLimit(keys[1], LOGIN_FAILURES_PER_IP, LOGIN_WINDOW_MS);

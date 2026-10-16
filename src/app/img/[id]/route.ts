@@ -10,6 +10,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
       "Content-Type": image.mime,
       "Cache-Control": "public, max-age=31536000, immutable",
       "X-Content-Type-Options": "nosniff",
+      "Content-Security-Policy": "default-src 'none'; sandbox",
     },
   });
 }

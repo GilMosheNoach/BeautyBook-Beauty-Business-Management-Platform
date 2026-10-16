@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { ipFromHeaders, rateLimit } from "@/lib/rateLimit";
 import { isDateKey, localDateKey } from "@/lib/time";
 import { availableDays } from "@/server/availability";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
+  if (!rateLimit(`slots:${ipFromHeaders(req.headers)}`, 120, 60_000)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429, headers: { "Retry-After": "60" } });
+  }
   const { slug } = await params;
   const url = new URL(req.url);
   const serviceId = url.searchParams.get("serviceId") ?? "";
