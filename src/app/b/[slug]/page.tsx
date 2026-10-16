@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/money";
@@ -207,9 +206,6 @@ export default async function BusinessPage({ params, searchParams }: Props) {
         </div>
         <p className="mt-10 flex items-center justify-center gap-2 text-xs text-ivory/60">
           מופעל על ידי <span dir="ltr" className="inline-flex items-center gap-1.5"><LogoMark size={18} /><Wordmark className="text-base text-ivory/90" /></span>
-        </p>
-        <p className="mt-3 text-xs">
-          <Link href="/login" className="text-ivory/60 underline underline-offset-4 hover:text-ivory">כניסה לבעלת העסק</Link>
         </p>
         <LegalLinks className="mt-4 text-ivory/60 [&_a:hover]:text-ivory" />
       </footer>
