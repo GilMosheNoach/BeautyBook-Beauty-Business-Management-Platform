@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { bookAppointmentAction } from "@/server/actions/publicBooking";
 
 type Service = { id: string; name: string; description: string; durationMin: number; priceLabel: string };
-type Day = { date: string; slots: string[] };
+type Day = { date: string; slots: string[]; recommended?: string[] };
 type Invite = { token: string; clientName: string; clientPhone: string } | null;
 
 type Props = { slug: string; services: Service[]; timezone: string; invite: Invite; requiresApproval: boolean; initialServiceId: string | null;
@@ -162,18 +162,34 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
               {selectedDay && (
                 <div className="mt-5">
                   <p className="mb-3 text-sm text-stone-600">{longFmt.format(keyToDate(selectedDay.date))}</p>
+                  {!!selectedDay.recommended?.length && (
+                    <p className="mb-3 flex items-center gap-2 text-xs text-stone-500">
+                      <span className="h-1.5 w-1.5 rounded-full bg-brand-600" aria-hidden />
+                      השעות המסומנות מומלצות
+                    </p>
+                  )}
                   <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-                    {selectedDay.slots.map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setSlot(s)}
-                        aria-pressed={s === slot}
-                        className={`border py-3 text-sm transition ${s === slot ? "border-brand-600 bg-brand-600 text-ivory" : "border-stone-300 bg-ivory hover:border-stone-900"}`}
-                      >
-                        {timeFmt.format(new Date(s))}
-                      </button>
-                    ))}
+                    {selectedDay.slots.map((s) => {
+                      const recommended = selectedDay.recommended?.includes(s) ?? false;
+                      return (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setSlot(s)}
+                          aria-pressed={s === slot}
+                          data-recommended={recommended || undefined}
+                          className={`flex h-16 flex-col items-center justify-center border text-sm transition ${s === slot ? "border-brand-600 bg-brand-600 text-ivory" : recommended ? "border-stone-900 bg-ivory hover:bg-stone-50" : "border-stone-300 bg-ivory hover:border-stone-900"}`}
+                        >
+                          {timeFmt.format(new Date(s))}
+                          {recommended && (
+                            <span className={`mt-0.5 flex items-center justify-center gap-1 text-[10px] tracking-wide ${s === slot ? "text-ivory/80" : "text-brand-600"}`}>
+                              <span className={`h-1 w-1 rounded-full ${s === slot ? "bg-ivory/80" : "bg-brand-600"}`} aria-hidden />
+                              מומלץ
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}

@@ -23,7 +23,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   const count = Math.min(Math.max(Number(url.searchParams.get("days")) || 14, 1), 31);
   const days = await availableDays(business, service.durationMin, from, count);
   return NextResponse.json(
-    { timezone: business.timezone, days: days.map((d) => ({ date: d.date, slots: d.slots.map((s) => s.toISOString()) })) },
+    { timezone: business.timezone, days: days.map((d) => ({ date: d.date, slots: d.slots.map((s) => s.toISOString()), recommended: d.recommended.map((s) => s.toISOString()) })) },
     { headers: { "Cache-Control": "no-store" } },
   );
 }

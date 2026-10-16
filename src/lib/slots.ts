@@ -50,3 +50,30 @@ export function computeSlots(input: SlotInput): Date[] {
   }
   return result;
 }
+
+/**
+ * The free slots that sit right next to an existing appointment (just before
+ * or just after it), so booking one keeps the owner's day without big gaps.
+ * A slot counts as adjacent when the gap to the appointment, beyond the
+ * buffer, is shorter than one slot step. No appointments means no marks.
+ */
+export function recommendedSlots(input: {
+  slots: Date[];
+  appointments: Interval[];
+  durationMin: number;
+  stepMin: number;
+  bufferMin: number;
+}): Date[] {
+  const step = input.stepMin * 60_000;
+  const buffer = input.bufferMin * 60_000;
+  const duration = input.durationMin * 60_000;
+  return input.slots.filter((slot) => {
+    const start = slot.getTime();
+    const end = start + duration;
+    return input.appointments.some((a) => {
+      const after = start - (a.end.getTime() + buffer);
+      const before = a.start.getTime() - buffer - end;
+      return (after >= 0 && after < step) || (before >= 0 && before < step);
+    });
+  });
+}

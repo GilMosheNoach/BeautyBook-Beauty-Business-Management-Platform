@@ -1,12 +1,17 @@
 import type { Business } from "@prisma/client";
 import { db } from "@/lib/db";
-import { computeSlots, type Interval } from "@/lib/slots";
+import { computeSlots, recommendedSlots, type Interval } from "@/lib/slots";
 import { addDaysToKey, localDateKey, localMinutesToDate } from "@/lib/time";
 
 export const ACTIVE_STATUSES = ["PENDING", "CONFIRMED"] as const;
 
 /** Appointments and time off that block any part of [rangeStart, rangeEnd). */
 export async function busyIntervals(businessId: string, rangeStart: Date, rangeEnd: Date): Promise<Interval[]> {
+  const { appointments, timeOff } = await busyParts(businessId, rangeStart, rangeEnd);
+  return [...appointments, ...timeOff];
+}
+
+async function busyParts(businessId: string, rangeStart: Date, rangeEnd: Date): Promise<{ appointments: Interval[]; timeOff: Interval[] }> {
   const dayStart = rangeStart;
   const dayEnd = rangeEnd;
   const [appointments, timeOff] = await Promise.all([
@@ -24,7 +29,8 @@ export async function busyIntervals(businessId: string, rangeStart: Date, rangeE
       select: { startsAt: true, endsAt: true },
     }),
   ]);
-  return [...appointments, ...timeOff].map((b) => ({ start: b.startsAt, end: b.endsAt }));
+  const toInterval = (b: { startsAt: Date; endsAt: Date }) => ({ start: b.startsAt, end: b.endsAt });
+  return { appointments: appointments.map(toInterval), timeOff: timeOff.map(toInterval) };
 }
 
 export function bookableWindow(business: Business, now = new Date()) {
@@ -45,13 +51,13 @@ export async function availableDays(business: Business, durationMin: number, fro
   if (!keys.length) return [];
 
   const tz = business.timezone;
-  const [hours, busy] = await Promise.all([
+  const [hours, { appointments, timeOff }] = await Promise.all([
     db.workingHours.findMany({ where: { businessId: business.id } }),
-    busyIntervals(business.id, localMinutesToDate(keys[0], 0, tz), localMinutesToDate(addDaysToKey(keys.at(-1)!, 1), 0, tz)),
+    busyParts(business.id, localMinutesToDate(keys[0], 0, tz), localMinutesToDate(addDaysToKey(keys.at(-1)!, 1), 0, tz)),
   ]);
-  return keys.map((dateKey) => ({
-    date: dateKey,
-    slots: computeSlots({
+  const busy = [...appointments, ...timeOff];
+  return keys.map((dateKey) => {
+    const slots = computeSlots({
       dateKey,
       tz,
       durationMin,
@@ -61,8 +67,13 @@ export async function availableDays(business: Business, durationMin: number, fro
       now,
       hours,
       busy,
-    }),
-  }));
+    });
+    return {
+      date: dateKey,
+      slots,
+      recommended: recommendedSlots({ slots, appointments, durationMin, stepMin: business.slotStepMin, bufferMin: business.bufferMin }),
+    };
+  });
 }
 
 export async function availableSlots(business: Business, durationMin: number, dateKey: string, now = new Date()) {
