@@ -112,7 +112,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
           <div className="flex shrink-0 items-center gap-6 text-sm tracking-wide">
             {services.length > 0 && <a href="#services" className="hidden text-ivory/85 hover:text-ivory sm:inline">טיפולים</a>}
             <a href="#gallery" className="hidden text-ivory/85 hover:text-ivory sm:inline">גלריה</a>
-            <a href={services.length ? "#services" : bookHref()} className="border border-ivory/70 px-4 py-2 text-xs tracking-[0.15em] hover:bg-ivory hover:text-stone-900">לקביעת תור</a>
+            <a href={bookHref()} className="border border-ivory/70 px-4 py-2 text-xs tracking-[0.15em] hover:bg-ivory hover:text-stone-900">לקביעת תור</a>
           </div>
         </nav>
 
@@ -121,7 +121,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
           <h1 className="mt-4 max-w-4xl font-serif text-[3.25rem] font-extralight leading-[1.02] sm:text-8xl">{business.name}</h1>
           {business.tagline && <p className="mt-5 max-w-xl text-lg font-light leading-relaxed text-ivory/90 sm:text-xl">{business.tagline}</p>}
           <div className="mt-9 flex flex-wrap gap-3">
-            <a href={services.length ? "#services" : bookHref()} className="btn bg-ivory px-8 py-3.5 tracking-[0.12em] text-stone-900 hover:bg-white">לקביעת תור</a>
+            <a href={bookHref()} className="btn bg-ivory px-8 py-3.5 tracking-[0.12em] text-stone-900 hover:bg-white">לקביעת תור</a>
             {services.length > 0 && (
               <a href="#services" className="btn border border-ivory/70 px-8 py-3.5 tracking-[0.12em] text-ivory hover:bg-ivory hover:text-stone-900">לטיפולים</a>
             )}
@@ -180,7 +180,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
               <p className="eyebrow">קצת עליי</p>
               <h2 className="mt-3 font-serif text-4xl font-extralight leading-tight sm:text-5xl">{business.bioTitle || business.name}</h2>
               {business.bio && <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-stone-700 sm:text-lg">{business.bio}</p>}
-              <a href={services.length ? "#services" : bookHref()} className="btn-primary mt-9 px-8 py-3.5 tracking-[0.12em]">לקביעת תור</a>
+              <a href={bookHref()} className="btn-primary mt-9 px-8 py-3.5 tracking-[0.12em]">לקביעת תור</a>
             </div>
             {images.aboutId && (
               <div className="relative order-first aspect-[4/5] overflow-hidden bg-sand sm:order-none">
