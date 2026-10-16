@@ -61,3 +61,8 @@ body {
     @apply text-sm text-stone-500;
   }
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

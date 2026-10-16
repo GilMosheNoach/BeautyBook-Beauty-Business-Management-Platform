@@ -151,7 +151,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
         <section id="services" className="scroll-mt-6 pt-16 pb-20 sm:pt-20 sm:pb-24">
           <SectionTitle title="טיפולים" />
           {/* Full-bleed tiles, edge to edge: stacked on phones, side by side on wider screens */}
-          <div className={`mt-10 grid grid-cols-1 gap-1 ${tileColumns(services.length)}`}>
+          <div className={`group/grid mt-10 grid grid-cols-1 gap-1 ${tileColumns(services.length)}`}>
             {services.map((s, i) => (
               <ServiceCard key={s.id} service={s} index={i} href={bookHref(s.id)} shape={tileShape(services.length)} />
             ))}
@@ -243,7 +243,7 @@ function ServiceCard({ service: s, index, href, shape }: { service: ServiceCardD
   return (
     <a
       href={href}
-      className={`group relative block overflow-hidden ${shape} ${photo ? "bg-stone-900" : EMPTY_FILLS[index % EMPTY_FILLS.length]}`}
+      className={`group relative block overflow-hidden outline-none transition-opacity duration-500 sm:group-hover/grid:opacity-50 sm:hover:!opacity-100 ${shape} ${photo ? "bg-stone-900" : EMPTY_FILLS[index % EMPTY_FILLS.length]}`}
     >
       {s.imageId ? (
         <>
@@ -255,11 +255,13 @@ function ServiceCard({ service: s, index, href, shape }: { service: ServiceCardD
           {String(index + 1).padStart(2, "0")}
         </span>
       )}
-      <div className={`absolute inset-x-0 bottom-0 p-7 sm:p-8 ${photo ? "text-ivory" : "text-stone-900"}`}>
+      {/* Hover / keyboard focus: the other tiles fade back and a fine frame draws in around this one */}
+      <span aria-hidden className={`pointer-events-none absolute inset-3 border opacity-0 transition duration-500 group-hover:opacity-100 group-focus-visible:opacity-100 ${photo ? "border-ivory/70" : "border-stone-900/60"}`} />
+      <div className={`absolute inset-x-0 bottom-0 p-7 transition-transform duration-500 group-hover:-translate-y-1 sm:p-8 ${photo ? "text-ivory" : "text-stone-900"}`}>
         <p className="font-serif text-[2rem] font-extralight leading-tight sm:text-[2.25rem]">{s.name}</p>
         {s.description && <p className="mt-2 line-clamp-2 text-sm leading-relaxed opacity-85">{s.description}</p>}
         <p className="mt-2 text-sm opacity-85">{s.durationMin} דקות · {s.priceLabel}</p>
-        <p className="mt-4 inline-block border-b border-current pb-0.5 text-xs tracking-[0.2em]">לקביעת תור</p>
+        <p className={`mt-4 inline-block border px-4 py-2 text-xs tracking-[0.2em] transition duration-500 border-current ${photo ? "group-hover:bg-ivory group-hover:text-stone-900" : "group-hover:bg-stone-900 group-hover:text-ivory"}`}>לקביעת תור</p>
       </div>
     </a>
   );
