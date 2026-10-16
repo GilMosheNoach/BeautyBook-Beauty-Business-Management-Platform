@@ -40,15 +40,15 @@ export async function requireUser() {
 }
 
 /**
- * On the login and signup pages: a finished account (business set up, trial or
- * paid up) goes straight to its dashboard, while an account that never finished
- * signing up is signed out so the plain form shows.
+ * On the login page a finished account (business set up, trial or paid up) goes
+ * straight to its dashboard. The signup page always shows its form, so anyone
+ * signed in there is signed out first, as is an unfinished account on login.
  */
 export async function redirectSignedInOwner(page: "/login" | "/signup") {
   const user = await getCurrentUser();
   if (!user) return;
   const subscription = await db.subscription.findUnique({ where: { userId: user.id } });
-  if (user.business && hasAccess(subscription)) redirect("/dashboard");
+  if (page === "/login" && user.business && hasAccess(subscription)) redirect("/dashboard");
   redirect(`/api/auth/reset?next=${page}`);
 }
 
