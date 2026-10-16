@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { AuthShell } from "@/components/AuthShell";
 import { SubmitButton } from "@/components/SubmitButton";
 import { db } from "@/lib/db";
+import { hasAccess } from "@/lib/billing";
 import { requireUser } from "@/lib/session";
 import { completeTestCheckoutAction } from "@/server/actions/billing";
 import { isTestBilling } from "@/server/payments";
@@ -18,7 +19,7 @@ export default async function TestCheckoutPage({ params }: { params: Promise<{ t
   const action = completeTestCheckoutAction.bind(null, token);
 
   return (
-    <AuthShell back="/subscribe" title="עמוד תשלום לדוגמה" subtitle="כאן יופיע העמוד המאובטח של חברת הסליקה.">
+    <AuthShell back={hasAccess(sub) ? "/dashboard/billing" : "/subscribe"} title="עמוד תשלום לדוגמה" subtitle="כאן יופיע העמוד המאובטח של חברת הסליקה.">
       <p className="rounded-xl bg-stone-100 px-3 py-2 text-sm text-stone-900">
         מצב בדיקה: לא מזינים כאן פרטי כרטיס ולא מתבצע שום חיוב. בוחרים איך הכרטיס יתנהג בחיובים הבאים.
       </p>
