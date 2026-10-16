@@ -150,7 +150,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
 
       {services.length > 0 && (
         <section id="services" className="scroll-mt-6 pt-16 pb-20 sm:pt-20 sm:pb-24">
-          <SectionTitle eyebrow="הטיפולים שלנו" title="טיפולים" />
+          <SectionTitle title="טיפולים" />
           {/* Full-bleed tiles, edge to edge: stacked on phones, side by side on wider screens */}
           <div className={`mt-10 grid grid-cols-1 gap-1 ${tileColumns(services.length)}`}>
             {services.map((s, i) => (
@@ -161,7 +161,7 @@ export default async function BusinessPage({ params, searchParams }: Props) {
       )}
 
       <section id="gallery" className="mx-auto max-w-6xl scroll-mt-6 px-4 pb-20 sm:px-6">
-        <SectionTitle eyebrow="מהסטודיו" title="גלריה" />
+        <SectionTitle title="גלריה" />
         {images.gallery.length > 0 ? (
           <Gallery ids={images.gallery} />
         ) : (
@@ -217,13 +217,8 @@ export default async function BusinessPage({ params, searchParams }: Props) {
   );
 }
 
-function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
-  return (
-    <div className="text-center">
-      <p className="eyebrow">{eyebrow}</p>
-      <h2 className="mt-2 font-serif text-3xl font-extralight sm:text-4xl">{title}</h2>
-    </div>
-  );
+function SectionTitle({ title }: { title: string }) {
+  return <h2 className="text-center font-serif text-3xl font-extralight sm:text-4xl">{title}</h2>;
 }
 
 /** Picks a column count that leaves no lonely card in the last row where possible. */
