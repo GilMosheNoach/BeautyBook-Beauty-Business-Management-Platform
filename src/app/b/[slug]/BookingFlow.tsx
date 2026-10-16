@@ -8,14 +8,17 @@ type Service = { id: string; name: string; description: string; durationMin: num
 type Day = { date: string; slots: string[] };
 type Invite = { token: string; clientName: string; clientPhone: string } | null;
 
-type Props = { slug: string; services: Service[]; timezone: string; invite: Invite; requiresApproval: boolean; initialServiceId: string | null };
+type Props = { slug: string; services: Service[]; timezone: string; invite: Invite; requiresApproval: boolean; initialServiceId: string | null;
+  /** The treatment was already picked on the landing page: skip the list and start at the date. */
+  fixedService?: boolean;
+};
 
 function nextDateKey(key: string) {
   const [y, m, d] = key.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d + 1)).toISOString().slice(0, 10);
 }
 
-export function BookingFlow({ slug, services, timezone, invite, requiresApproval, initialServiceId }: Props) {
+export function BookingFlow({ slug, services, timezone, invite, requiresApproval, initialServiceId, fixedService = false }: Props) {
   const router = useRouter();
   const [serviceId, setServiceId] = useState<string | null>(initialServiceId);
   const [days, setDays] = useState<Day[]>([]);
@@ -27,6 +30,8 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
   const [pending, startTransition] = useTransition();
 
   const service = services.find((s) => s.id === serviceId) ?? null;
+  const showList = !(fixedService && service);
+  const stepNo = (n: number) => String(showList ? n : n - 1).padStart(2, "0");
   const timeFmt = useMemo(() => new Intl.DateTimeFormat("he-IL", { timeZone: timezone, hour: "2-digit", minute: "2-digit", hour12: false }), [timezone]);
   const dayFmt = useMemo(() => new Intl.DateTimeFormat("he-IL", { timeZone: "UTC", weekday: "short" }), []);
   const longFmt = useMemo(() => new Intl.DateTimeFormat("he-IL", { timeZone: "UTC", weekday: "long", day: "numeric", month: "long" }), []);
@@ -90,7 +95,8 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
 
   return (
     <div className="space-y-14">
-      {/* Step 1: service */}
+      {/* Step 1: service (skipped when it was chosen on the landing page) */}
+      {showList && (
       <section>
         <StepTitle n="01">בחירת טיפול</StepTitle>
         {services.length === 0 && <p className="muted">עוד לא הוגדרו שירותים להזמנה.</p>}
@@ -113,11 +119,12 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
           ))}
         </div>
       </section>
+      )}
 
       {/* Step 2: day + time */}
       {service && (
         <section>
-          <StepTitle n="02">בחירת מועד</StepTitle>
+          <StepTitle n={stepNo(2)}>בחירת מועד</StepTitle>
           {loading && days.length === 0 ? (
             <p className="muted">טוענת שעות פנויות…</p>
           ) : (
@@ -178,7 +185,7 @@ export function BookingFlow({ slug, services, timezone, invite, requiresApproval
       {/* Step 3: details */}
       {service && slot && (
         <section>
-          <StepTitle n="03">הפרטים שלך</StepTitle>
+          <StepTitle n={stepNo(3)}>הפרטים שלך</StepTitle>
           <p className="muted -mt-2 mb-5">
             {service.name} · {longFmt.format(keyToDate(date!))} בשעה {timeFmt.format(new Date(slot))}
           </p>
