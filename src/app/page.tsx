@@ -52,14 +52,11 @@ export default async function Home() {
         <nav className="relative z-10 flex items-center justify-between gap-4 border-b border-ivory/15 px-5 py-4 sm:px-10">
           <Logo light />
           <div className="flex items-center gap-2">
-            {user ? (
-              <Link href="/dashboard" className="btn bg-ivory px-4 py-2 text-sm text-stone-900 hover:bg-white">ללוח הבקרה</Link>
-            ) : (
-              <>
-                <Link href="/login" className="btn border border-ivory/70 px-4 py-2 text-sm text-ivory hover:bg-ivory hover:text-stone-900">כניסה</Link>
-                <Link href="/signup" className="btn bg-ivory px-4 py-2 text-sm text-stone-900 hover:bg-white">הרשמה</Link>
-              </>
+            {user && (
+              <Link href="/dashboard" className="px-2 py-2 text-sm text-ivory/80 underline-offset-4 hover:text-ivory hover:underline">לוח הבקרה</Link>
             )}
+            <Link href="/login" className="btn border border-ivory/70 px-4 py-2 text-sm text-ivory hover:bg-ivory hover:text-stone-900">כניסה</Link>
+            <Link href="/signup" className="btn bg-ivory px-4 py-2 text-sm text-stone-900 hover:bg-white">הרשמה</Link>
           </div>
         </nav>
         <div className="relative mx-auto my-auto w-full max-w-6xl px-6 py-16 text-center sm:px-10">
