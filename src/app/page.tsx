@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
-import { Wordmark } from "@/components/Logo";
+import { Logo } from "@/components/Logo";
 import { LegalLinks } from "@/components/LegalFooter";
 import { getCurrentUser } from "@/lib/session";
 import { JsonLd } from "@/components/JsonLd";
@@ -50,7 +50,7 @@ export default async function Home() {
           </>
         )}
         <nav className="relative z-10 flex items-center justify-between gap-4 border-b border-ivory/15 px-5 py-4 sm:px-10">
-          <Link href="/" aria-label="BeautyBook"><Wordmark className="text-[28px]" /></Link>
+          <Logo light />
           <div className="flex items-center gap-2">
             {user ? (
               <Link href="/dashboard" className="btn bg-ivory px-4 py-2 text-sm text-stone-900 hover:bg-white">ללוח הבקרה</Link>
