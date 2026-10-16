@@ -9,7 +9,7 @@ function nowMinutes(tz: string) {
   return get("hour") * 60 + get("minute");
 }
 
-// Red line across today's column marking the current time; refreshes every 30 seconds.
+// Black line across today's column marking the current time; refreshes every 30 seconds.
 export function NowLine({ tz, gridStart, gridEnd, pxPerMin }: { tz: string; gridStart: number; gridEnd: number; pxPerMin: number }) {
   const [minutes, setMinutes] = useState<number | null>(null);
 
@@ -27,8 +27,8 @@ export function NowLine({ tz, gridStart, gridEnd, pxPerMin }: { tz: string; grid
       style={{ top: (minutes - gridStart) * pxPerMin - 1 }}
       aria-hidden
     >
-      <span className="-ms-1 h-2.5 w-2.5 shrink-0 rounded-full bg-red-500" />
-      <span className="h-0.5 flex-1 bg-red-500" />
+      <span className="-ms-1 h-2.5 w-2.5 shrink-0 rounded-full bg-stone-900" />
+      <span className="h-0.5 flex-1 bg-stone-900" />
     </div>
   );
 }
